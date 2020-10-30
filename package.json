@@ -1,0 +1,32 @@
+{
+  "name": "certacrypt-filemanager",
+  "version": "0.0.1",
+  "description": "UI for CertaCrypt",
+  "main": "dist/index.js",
+  "scripts": {
+    "build-ui": "cd ./filemanager-ui && npm run build",
+    "electron": "npm run build-ui && electron dist/index.js",
+    "electron-tsc": "tsc src/index.ts -outDir dist && npm run electron"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fsteff/certacrypt-filemanager.git"
+  },
+  "keywords": [
+    "P2P",
+    "Hyperdrive",
+    "Dat"
+  ],
+  "author": "Stefan Fixl (Fsteff)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/fsteff/certacrypt-filemanager/issues"
+  },
+  "homepage": "https://github.com/fsteff/certacrypt-filemanager#readme",
+  "devDependencies": {
+    "electron": "^10.1.5"
+  },
+  "dependencies": {
+    "certacrypt": "git+https://github.com/fsteff/certacrypt.git"
+  }
+}
