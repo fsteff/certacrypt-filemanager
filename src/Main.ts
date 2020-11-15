@@ -1,4 +1,5 @@
 import { BrowserWindow } from 'electron';
+import path from 'path'
 
 export default class Main {
     static mainWindow: Electron.BrowserWindow;
@@ -16,10 +17,20 @@ export default class Main {
     }
 
     private static onReady() {
-        Main.mainWindow = new Main.BrowserWindow({ width: 800, height: 600 });
+        Main.mainWindow = new Main.BrowserWindow({ 
+            width: 1024, 
+            height: 600 , 
+            webPreferences: {
+                preload: path.join(__dirname, 'preload.js'), 
+                nodeIntegration: false, 
+                enableRemoteModule: false,
+                contextIsolation: true
+            }
+        });
         Main.mainWindow
             .loadURL('file://' + __dirname + '/filemanager-ui/index.html');
         Main.mainWindow.on('closed', Main.onClose);
+        Main.mainWindow.webContents.openDevTools();
     }
 
     static main(app: Electron.App, browserWindow: typeof BrowserWindow) {
