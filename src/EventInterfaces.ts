@@ -15,10 +15,11 @@ export type Stat = {
     atime: string,
     mtime: string,
     ctime: string,
-    linkname: any,
-    isDirectory: boolean,
-    isFile: boolean,
-    isSymlink: boolean
+    linkname?: any,
+    // TODO: clarify
+    //isDirectory: boolean,
+    //isFile: boolean,
+    //isSymlink: boolean
 }
 
 export interface ICertaCryptEventHandler {
@@ -32,7 +33,7 @@ export interface IDriveEventHandler {
     stat(path: string): Promise<Stat>
 
     open(path: string, flags: string): Promise<Fd>
-    read(fd: Fd, position?: number, length?: number): Promise<Uint8Array>
+    read(fd: Fd, position?: number, length?: number): Promise<{buffer: Uint8Array, bytesRead: number}>
     write(fd: Fd, buf: Uint8Array, position?: number): Promise<void>
 
     readFile(path: string): Promise<Fd>

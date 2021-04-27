@@ -3,10 +3,11 @@ import { app, BrowserWindow, ipcMain, protocol } from 'electron'
 import { promises as fs } from 'fs'
 import Main from './Main';
 
-import { CertaCrypt } from 'certacrypt'
+import { CertaCrypt, Directory, File } from 'certacrypt'
 import { DefaultCrypto } from 'certacrypt-crypto'
 
 import DriveEventHandler from './DriveEventHandler'
+import { Vertex } from 'hyper-graphdb';
 
 app.on('ready', startServer)
 
@@ -28,14 +29,25 @@ async function startServer() {
 
     const certacrypt = new CertaCrypt(client.corestore(), crypto, config.sessionUrl)
     if(!config.sessionUrl) {
+        const driveRoot = certacrypt.graph.create<Directory>()
+        await certacrypt.graph.put(driveRoot)
+        const appRoot = await certacrypt.path('/apps')
+        appRoot.addEdgeTo(driveRoot, 'filemanager')
+        await certacrypt.graph.put(appRoot)
+
         config.sessionUrl = await certacrypt.getSessionUrl()
         const json = JSON.stringify(config)
         await fs.writeFile(configFile, json, 'utf-8')
     }
-    new DriveEventHandler(ipcMain, certacrypt)
+    const rootVertex = <Vertex<Directory>> await certacrypt.path('/apps/filemanager')
+    const drive = await certacrypt.drive(rootVertex)
 
-    //const drive = await certacrypt.getDefaultDrive()
-    //await drive.promises.writeFile('test.txt', 'hello world')
-
+    const api = new DriveEventHandler(ipcMain, drive)
+    const files = await api.readdir('/')
+    console.log(files)
+    if(! files.includes('readme.txt')) {
+        await drive.promises.writeFile('readme.txt', 'hello world')
+    }
+    
     Main.main(app, BrowserWindow)
 }
