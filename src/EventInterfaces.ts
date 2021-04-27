@@ -1,3 +1,4 @@
+
 export type Fd = number
 export type Stat = {
     dev: number,
@@ -31,9 +32,9 @@ export interface IDriveEventHandler {
     stat(path: string): Promise<Stat>
 
     open(path: string, flags: string): Promise<Fd>
-    read(fd: Fd, position?: number, length?: number): Promise<Buffer>
-    write(fd: Fd, buf: Buffer, position?: number): Promise<void>
+    read(fd: Fd, position?: number, length?: number): Promise<Uint8Array>
+    write(fd: Fd, buf: Uint8Array, position?: number): Promise<void>
 
     readFile(path: string): Promise<Fd>
-    writeFile(path: string, content: Buffer|string): Promise<void>
+    writeFile(path: string, content: Uint8Array|string): Promise<void>
 }

@@ -11,11 +11,11 @@ export class AppComponent {
   constructor () {
     const self = this
     window.setTimeout(() => {
-      globals.drive.getLocalDriveId().then(id => self.onData(id))
+      //globals.drive.getLocalDriveId().then(id => self.onData(id))
     }, 1000)
   }
 
   onData (id) {
-    fetch('hyper://' + id + '/.enc/1/test.txt').then(rsp => rsp.text).then(console.log)
+    //fetch('hyper://' + id + '/.enc/1/test.txt').then(rsp => rsp.text).then(console.log)
   }
 }
