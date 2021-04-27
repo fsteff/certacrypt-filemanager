@@ -9,10 +9,13 @@ import globals from '../../../src/globals';
 export class AppComponent {
   title = 'filemanager-ui';
   constructor () {
-    console.log('drive is ' + !!globals.drive)
+    const self = this
     window.setTimeout(() => {
-      console.log('drive.getLocalDriveId is ' + !!globals.drive.getLocalDriveId)
-      globals.drive.getLocalDriveId().then(id => this.title = id)
+      globals.drive.getLocalDriveId().then(id => self.onData(id))
     }, 1000)
+  }
+
+  onData (id) {
+    fetch('hyper://' + id + '/.enc/1/test.txt').then(rsp => rsp.text).then(console.log)
   }
 }

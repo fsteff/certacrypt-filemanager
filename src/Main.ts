@@ -41,6 +41,7 @@ export default class Main {
         Main.BrowserWindow = browserWindow;
         Main.application = app;
         Main.application.on('window-all-closed', Main.onWindowAllClosed);
-        Main.application.on('ready', Main.onReady);
+        //Main.application.on('ready', Main.onReady);
+        this.onReady()
     }
 }

@@ -24,9 +24,10 @@
   },
   "homepage": "https://github.com/fsteff/certacrypt-filemanager#readme",
   "devDependencies": {
-    "electron": "^10.1.5"
+    "electron": "^12.0.5"
   },
   "dependencies": {
-    "certacrypt": "git+https://github.com/fsteff/certacrypt.git"
+    "certacrypt": "git+https://github.com/fsteff/certacrypt.git",
+    "hyperspace": "^3.19.0"
   }
 }
