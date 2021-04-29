@@ -46,7 +46,7 @@ async function startServer() {
     const files = await api.readdir('/')
     console.log(files)
     if(! files.includes('readme.txt')) {
-        await drive.promises.writeFile('readme.txt', 'hello world')
+        await api.writeFile('readme.txt', 'hello world')
     }
     
     Main.main(app, BrowserWindow)

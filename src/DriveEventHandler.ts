@@ -45,10 +45,10 @@ export default class DriveEventHandler extends MainEventHandler implements IDriv
         //return new Promise((resolve, reject) => this.drive.write(fd, buf, 0, buf.length, position, (err) => err ? reject(err) : resolve(undefined)))
     }
 
-    readFile(path: string): Promise<Fd>{
-        return this.drive.promises.readFile(path, {db: {encrypted: true}})
+    readFile(path: string, encoding: string = 'utf-8'): Promise<Buffer>{
+        return this.drive.promises.readFile(path, {db: {encrypted: true}, encoding})
     }
-    writeFile(path: string, content: Buffer|string): Promise<void>{
-        return this.drive.promises.writeFile(path, content, {db: {encrypted: true}})
+    writeFile(path: string, content: Buffer|string, encoding: string = 'utf-8'): Promise<void>{
+        return this.drive.promises.writeFile(path, content, {db: {encrypted: true}, encoding})
     }
 }

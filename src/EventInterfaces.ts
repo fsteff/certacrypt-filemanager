@@ -36,6 +36,6 @@ export interface IDriveEventHandler {
     read(fd: Fd, position?: number, length?: number): Promise<{buffer: Uint8Array, bytesRead: number}>
     write(fd: Fd, buf: Uint8Array, position?: number): Promise<void>
 
-    readFile(path: string): Promise<Fd>
-    writeFile(path: string, content: Uint8Array|string): Promise<void>
+    readFile(path: string, encoding?: string): Promise<Uint8Array|string>
+    writeFile(path: string, content: Uint8Array|string, encoding?: string): Promise<void>
 }

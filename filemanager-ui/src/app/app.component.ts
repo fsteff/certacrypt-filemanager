@@ -11,8 +11,8 @@ export class AppComponent {
   constructor () {
     const self = this
     window.setTimeout(() => {
-      globals.drive.readFile('readme.txt').then(text => self.onData(text))
-    }, 1000)
+      globals.drive.readFile('readme.txt', 'utf-8').then(text => self.onData(text))
+    }, 0)
   }
 
   onData (text) {
