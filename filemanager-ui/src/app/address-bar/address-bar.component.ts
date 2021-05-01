@@ -7,13 +7,12 @@ import { ActivatedRoute } from '@angular/router';
   styleUrls: ['./address-bar.component.css']
 })
 export class AddressBarComponent implements OnInit {
-  private route: ActivatedRoute
-
   path: string 
-  constructor() { }
+  
+  constructor(private route: ActivatedRoute) { this.path = 'loading...'}
 
   ngOnInit(): void {
-    this.path = window.location.pathname
+    this.route.paramMap.subscribe(params => this.path = window.decodeURIComponent(params.get('path')))
   }
 
 }

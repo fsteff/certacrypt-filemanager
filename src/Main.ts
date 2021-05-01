@@ -24,7 +24,9 @@ export default class Main {
                 preload: path.join(__dirname, 'preload.js'), 
                 nodeIntegration: false, 
                 enableRemoteModule: false,
-                contextIsolation: true
+                webSecurity: true,
+                allowRunningInsecureContent: false,
+                contextIsolation: true,
             }
         });
         Main.mainWindow

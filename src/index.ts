@@ -44,8 +44,7 @@ async function startServer() {
 
     const api = new DriveEventHandler(ipcMain, drive)
     const files = await api.readdir('/')
-    console.log(files)
-    if(! files.includes('readme.txt')) {
+    if(! files.findIndex(f => f.name = 'readme.txt')) {
         await api.writeFile('readme.txt', 'hello world')
     }
     

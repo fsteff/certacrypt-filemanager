@@ -1,4 +1,3 @@
-
 export type Fd = number
 export type Stat = {
     dev: number,
@@ -22,12 +21,14 @@ export type Stat = {
     //isSymlink: boolean
 }
 
+export type readdirResult = { name: string, path: string, stat: Stat }
+
 export interface ICertaCryptEventHandler {
     
 }
 
 export interface IDriveEventHandler {
-    readdir(path: string): Promise<Array<string>>
+    readdir(path: string): Promise<readdirResult[]>
     mkdir(path: string): Promise<void>
     rmdir(path: string): Promise<void>
     stat(path: string): Promise<Stat>

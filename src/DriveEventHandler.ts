@@ -1,7 +1,7 @@
 import { CertaCrypt, Hyperdrive } from "certacrypt";
 import { IpcMain } from "electron";
 import { MainEventHandler } from "./MainEventHandler";
-import { IDriveEventHandler, Fd, Stat } from "./EventInterfaces";
+import { IDriveEventHandler, Fd, Stat, readdirResult } from "./EventInterfaces";
 import { resolve } from "node:path";
 
 export default class DriveEventHandler extends MainEventHandler implements IDriveEventHandler{
@@ -12,8 +12,8 @@ export default class DriveEventHandler extends MainEventHandler implements IDriv
         this.drive = hyperdrive
     }
 
-    async readdir(path: string): Promise<Array<string>> {
-        return <Promise<string[]>> this.drive.promises.readdir(path, {db: {encrypted: true}})
+    async readdir(path: string): Promise<Array<readdirResult>> {
+        return <Promise<readdirResult[]>> this.drive.promises.readdir(path, {db: {encrypted: true}, includeStats: true})
     }
     async mkdir(path: string): Promise<void> {
         return this.drive.promises.mkdir(path, {db: {encrypted: true}})
