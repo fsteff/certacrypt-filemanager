@@ -1,1 +1,4 @@
-<span>{{path}}</span>
+<span>
+    <a routerLink="/explorer/%2f"><mat-icon>home</mat-icon><span>Home</span></a>
+    <span *ngFor="let part of path">/<a routerLink={{part.link}}>{{part.name}}</a></span>
+</span>

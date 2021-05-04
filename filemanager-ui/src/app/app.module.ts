@@ -5,8 +5,9 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatCardModule } from '@angular/material/card'
-import {MatToolbarModule} from '@angular/material/toolbar'
-import {MatTableModule} from '@angular/material/table'
+import { MatToolbarModule } from '@angular/material/toolbar'
+import { MatTableModule}  from '@angular/material/table'
+import { MatIconModule } from '@angular/material/icon'
 
 import { AddressBarComponent } from './address-bar/address-bar.component';
 import { FileListComponent } from './file-list/file-list.component';
@@ -25,7 +26,8 @@ import { ExplorerComponent } from './explorer/explorer.component'
     BrowserAnimationsModule,
     MatCardModule,
     MatToolbarModule,
-    MatTableModule
+    MatTableModule,
+    MatIconModule
   ],
   providers: [],
   bootstrap: [AppComponent]

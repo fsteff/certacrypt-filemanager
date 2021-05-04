@@ -15,10 +15,9 @@ export type Stat = {
     mtime: string,
     ctime: string,
     linkname?: any,
-    // TODO: clarify
-    //isDirectory: boolean,
-    //isFile: boolean,
-    //isSymlink: boolean
+    isDirectory?: boolean,
+    isFile?: boolean,
+    isSymlink?: boolean
 }
 
 export type readdirResult = { name: string, path: string, stat: Stat }

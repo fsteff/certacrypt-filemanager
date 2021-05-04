@@ -3,7 +3,7 @@ import { app, BrowserWindow, ipcMain, protocol } from 'electron'
 import { promises as fs } from 'fs'
 import Main from './Main';
 
-import { CertaCrypt, Directory, File } from 'certacrypt'
+import { CertaCrypt, Directory, enableDebugLogging } from 'certacrypt'
 import { DefaultCrypto } from 'certacrypt-crypto'
 
 import DriveEventHandler from './DriveEventHandler'
@@ -28,6 +28,7 @@ async function startServer() {
         })
 
     const certacrypt = new CertaCrypt(client.corestore(), crypto, config.sessionUrl)
+    enableDebugLogging()
     if(!config.sessionUrl) {
         const driveRoot = certacrypt.graph.create<Directory>()
         await certacrypt.graph.put(driveRoot)
@@ -50,6 +51,10 @@ async function startServer() {
 
     if(files.findIndex(f => f.name === 'pics') < 0) {
         await api.mkdir('pics')
+    }
+    const sub = await api.readdir('/pics')
+    if(sub.findIndex(f => f.name === 'hello.txt') < 0) {
+        await api.writeFile('/pics/hello.txt', 'salut')
     }
     
     Main.main(app, BrowserWindow)
