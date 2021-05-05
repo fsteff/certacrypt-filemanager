@@ -4,14 +4,16 @@ import { MatTableDataSource } from '@angular/material/table'
 import { ActivatedRoute } from '@angular/router'
 import { DriveService } from '../drive.service'
 
+type FileData = {name: string, isFile?: boolean, link?: string, icon?: string ,size: string, lastChanged: string, path: string}
+
 @Component({
   selector: 'app-file-list',
   templateUrl: './file-list.component.html',
   styleUrls: ['./file-list.component.css']
 })
 export class FileListComponent implements OnInit, AfterViewInit {
-  files: MatTableDataSource<{name: string, link?: string, icon?: string ,size: string, lastChanged: string}>
-  columnsToDisplay = ['icon', 'name', 'size', 'lastChanged']
+  files: MatTableDataSource<FileData>
+  columnsToDisplay = ['icon', 'name', 'size', 'lastChanged', 'more']
 
   @ViewChild(MatSort) sort: MatSort;
 
@@ -29,14 +31,24 @@ export class FileListComponent implements OnInit, AfterViewInit {
     this.files.sort = this.sort
   }
 
+  onDownload(file: FileData) {
+    console.log(file)
+  }
+
+  onShare(file: FileData) {
+    console.log('onShare: ' + file.path)
+  }
+
   getFiles(path: string) { 
     this.drive.readdir(path).subscribe(files => {
       this.files.data = 
         files.map(r => {
           return {
-            name: r.name, 
-            icon: r.stat.isDirectory ? 'folder' : 'description',
-            link: r.stat.isDirectory ? '/explorer/' + window.encodeURIComponent(r.path) : undefined,
+            name: r.name,
+            path: r.path,
+            isFile: r.stat?.isFile,
+            icon: r.stat?.isDirectory ? 'folder' : 'description',
+            link: r.stat?.isDirectory ? '/explorer/' + window.encodeURIComponent(r.path) : undefined,
             size: formatSize(r.stat?.size), 
             lastChanged: toDate(r.stat?.mtime)}
         })
