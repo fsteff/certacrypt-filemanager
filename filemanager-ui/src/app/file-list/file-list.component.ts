@@ -1,3 +1,4 @@
+import { UrlResolver } from '@angular/compiler'
 import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core'
 import { MatSort } from '@angular/material/sort'
 import { MatTableDataSource } from '@angular/material/table'
@@ -31,8 +32,11 @@ export class FileListComponent implements OnInit, AfterViewInit {
     this.files.sort = this.sort
   }
 
-  onDownload(file: FileData) {
-    console.log(file)
+  async onDownload(file: FileData) {
+    const download = await this.drive.downloadFile(file.path)
+    download.subscribe(state => {
+      console.log('downloading ' + file.path + ': ' + state.downloaded + ' / ' + state.size)
+    })
   }
 
   onShare(file: FileData) {

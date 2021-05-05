@@ -20,6 +20,8 @@ export type Stat = {
     isSymlink?: boolean
 }
 
+export type FileDownload = {filename: string, size: number, downloaded: number, error?: Error, localPath?: string}
+
 export type readdirResult = { name: string, path: string, stat: Stat }
 
 export interface ICertaCryptEventHandler {
@@ -32,10 +34,9 @@ export interface IDriveEventHandler {
     rmdir(path: string): Promise<void>
     stat(path: string): Promise<Stat>
 
-    open(path: string, flags: string): Promise<Fd>
-    read(fd: Fd, position?: number, length?: number): Promise<{buffer: Uint8Array, bytesRead: number}>
-    write(fd: Fd, buf: Uint8Array, position?: number): Promise<void>
-
     readFile(path: string, encoding?: string): Promise<Uint8Array|string>
     writeFile(path: string, content: Uint8Array|string, encoding?: string): Promise<void>
+
+    downloadFile(path: string): Promise<number>
+    getDownloadStates(): Promise<FileDownload[]>
 }

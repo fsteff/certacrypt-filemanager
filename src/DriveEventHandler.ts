@@ -1,11 +1,13 @@
-import { CertaCrypt, Hyperdrive } from "certacrypt";
-import { IpcMain } from "electron";
+import { Hyperdrive } from "certacrypt";
+import { IpcMain, dialog } from "electron";
+import fs from 'fs'
 import { MainEventHandler } from "./MainEventHandler";
-import { IDriveEventHandler, Fd, Stat, readdirResult } from "./EventInterfaces";
-import { resolve } from "node:path";
+import { IDriveEventHandler, FileDownload , Stat, readdirResult} from "./EventInterfaces";
+import { electron } from "node:process";
 
 export default class DriveEventHandler extends MainEventHandler implements IDriveEventHandler{
     private drive: Hyperdrive
+    private downloads: Array<FileDownload> = []
 
     constructor(app: IpcMain, hyperdrive: Hyperdrive) {
         super(app, 'drive')
@@ -23,32 +25,41 @@ export default class DriveEventHandler extends MainEventHandler implements IDriv
         //return this.drive.promises.rmdir(path)
     }
     async stat(path: string): Promise<Stat>{
-        return this.drive.promises.stat(path, {db: {encrypted: true}})
+        return this.drive.promises.stat(path, {db: {encrypted: true}, resolve: true})
     }
 
-    async open(path: string, flags: string): Promise<Fd>{
-        //  TODO: this api does not support encryption!
-        return Promise.reject(new Error('not implemented'))
-        //return new Promise((resolve, reject) => this.drive.open(path, flags, (err, fd) => err ? reject(err) : resolve(fd)))
-    }
-    async read(fd: Fd, position?: number, length?: number): Promise<{buffer: Buffer, bytesRead: number}>{
-        length = length || 1024
-        position = position || 0
-        const buffer = Buffer.alloc(length)
-        const count = <number> await new Promise((resolve, reject) => this.drive.read(fd, buffer, 0, length, position, (err, bytesRead, res) => err ? reject(err) : resolve(bytesRead)))
-        return Promise.reject(new Error('not implemented'))
-        //return {buffer, bytesRead: count}
-    }
-    async write(fd: Fd, buf: Buffer, position?: number): Promise<void>{
-        position = position || 0
-        return Promise.reject(new Error('not implemented'))
-        //return new Promise((resolve, reject) => this.drive.write(fd, buf, 0, buf.length, position, (err) => err ? reject(err) : resolve(undefined)))
-    }
 
     readFile(path: string, encoding: string = 'utf-8'): Promise<Buffer>{
         return this.drive.promises.readFile(path, {db: {encrypted: true}, encoding})
     }
     writeFile(path: string, content: Buffer|string, encoding: string = 'utf-8'): Promise<void>{
         return this.drive.promises.writeFile(path, content, {db: {encrypted: true}, encoding})
+    }
+
+    async downloadFile(path: string): Promise<number> {
+        const parts = path.split('/').filter(p => p.length > 0)
+        const filename = parts[parts.length-1]
+        const stat = await this.stat(path)
+        const state: FileDownload = {filename: path, size: stat.size, downloaded: 0}
+        const idx = this.downloads.length
+        this.downloads[idx] = state
+
+        const target = await dialog.showSaveDialog({defaultPath: filename})
+        if(!target.filePath) return Promise.reject()
+
+        const file = fs.createWriteStream(target.filePath)
+        const stream = this.drive.createReadStream(path, {db:{encrypted: true}})
+        stream.pipe(file)
+        stream.on('data', (chunk) => state.downloaded += chunk.length)
+        stream.on('error', err => state.error = err)
+        stream.on('close', () => { 
+            state.downloaded = state.size
+            state.localPath = target.filePath
+        })
+
+        return idx
+    }
+    async getDownloadStates(): Promise<FileDownload[]> {
+        return this.downloads
     }
 }

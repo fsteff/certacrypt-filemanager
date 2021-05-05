@@ -43,7 +43,9 @@
 
 <mat-menu #fileMore="matMenu">
   <ng-template matMenuContent let-file="file">
-    <button mat-menu-item (click)="onDownload(file)">Download</button> <!-- acess: {{file.path}} -->
+    <ng-container *ngIf="file.isFile">
+      <button mat-menu-item (click)="onDownload(file)">Download</button>
+    </ng-container>
     <button mat-menu-item (click)="onShare(file)">Share</button>
   </ng-template>
 </mat-menu>

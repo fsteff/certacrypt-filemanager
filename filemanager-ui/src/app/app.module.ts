@@ -12,7 +12,7 @@ import { MatMenuModule } from '@angular/material/menu'
 
 import { AddressBarComponent } from './address-bar/address-bar.component';
 import { FileListComponent } from './file-list/file-list.component';
-import { ExplorerComponent } from './explorer/explorer.component'
+import { ExplorerComponent } from './explorer/explorer.component';
 
 @NgModule({
   declarations: [
