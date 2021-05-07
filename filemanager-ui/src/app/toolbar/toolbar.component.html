@@ -1,0 +1,12 @@
+<div class="toolbar-container">
+    <div class="toolbar-element">
+        <input matInput placeholder="hyper://..." [(ngModel)]="shareInput">
+        <button mat-raised-button (click)="onMount()">Mount</button>
+    </div>
+    <div class="toolbar-element">
+        <mat-divider [vertical]="true"></mat-divider>
+    </div>
+    <div class="toolbar-element">
+        <button mat-raised-button (click)="onUpload()">Upload File</button>
+    </div>
+</div>

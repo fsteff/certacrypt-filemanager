@@ -1,0 +1,20 @@
+.toolbar-container {
+    display: flex;
+    flex-direction: row;
+}
+
+.toolbar-element {
+    margin: 0.5em;
+}
+
+button {
+    height: 2.5m;
+}
+
+input {
+    height: 2em;
+}
+
+mat-divider {
+    height: 2em;
+}
