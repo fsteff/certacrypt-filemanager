@@ -1,5 +1,8 @@
 <div class="toolbar-container">
     <div class="toolbar-element">
+        <button mat-icon-button (click)="onReload()"><mat-icon>sync</mat-icon></button>
+    </div>
+    <div class="toolbar-element">
         <input matInput placeholder="hyper://..." [(ngModel)]="shareInput">
         <button mat-raised-button (click)="onMount()">Mount</button>
     </div>

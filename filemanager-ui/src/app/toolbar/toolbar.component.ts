@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { DriveService } from '../drive.service';
 
 @Component({
   selector: 'app-toolbar',
@@ -8,17 +10,26 @@ import { Component, OnInit } from '@angular/core';
 export class ToolbarComponent implements OnInit {
   shareInput: string
 
-  constructor() { }
+  private currentPath: string
+
+  constructor(private drive: DriveService, private route: ActivatedRoute) { }
 
   ngOnInit(): void {
+
+    this.drive.observePath(this.route).subscribe(path => this.currentPath = path)
   }
 
   onMount() {
     console.log(this.shareInput)
   }
 
-  onUpload() {
-    console.log('upload')
+  async onUpload() {
+    console.log(await this.drive.uploadFile(this.currentPath))
+    this.drive.reload()
+  }
+
+  onReload() {
+    this.drive.reload()
   }
 
 }

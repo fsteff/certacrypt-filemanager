@@ -39,4 +39,6 @@ export interface IDriveEventHandler {
 
     downloadFile(path: string): Promise<number>
     getDownloadStates(): Promise<FileDownload[]>
+
+    uploadFile(path: string): Promise<string[]>
 }

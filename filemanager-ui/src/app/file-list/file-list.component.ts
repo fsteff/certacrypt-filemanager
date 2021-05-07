@@ -5,7 +5,15 @@ import { MatTableDataSource } from '@angular/material/table'
 import { ActivatedRoute } from '@angular/router'
 import { DriveService } from '../drive.service'
 
-type FileData = {name: string, isFile?: boolean, link?: string, icon?: string ,size: string, lastChanged: string, path: string}
+interface FileData {
+  name: string, 
+  isFile?: boolean, 
+  link?: string,
+  icon?: string,
+  size: string, 
+  lastChanged: string, 
+  path: string
+}
 
 @Component({
   selector: 'app-file-list',
@@ -22,10 +30,7 @@ export class FileListComponent implements OnInit, AfterViewInit {
 
   ngOnInit(): void {
     this.files = new MatTableDataSource()
-    this.route.paramMap.subscribe(params => {
-      let path = window.decodeURIComponent(params.get('path'))
-      this.getFiles(path)
-    })
+    this.drive.observePath(this.route).subscribe(path => this.getFiles(path))
   }
 
   ngAfterViewInit() {
@@ -45,6 +50,10 @@ export class FileListComponent implements OnInit, AfterViewInit {
 
   getFiles(path: string) { 
     this.drive.readdir(path).subscribe(files => {
+      files.sort((a,b) => (a.name.toLocaleLowerCase().localeCompare(b.name.toLocaleLowerCase())))
+      let dirs = files.filter(f => f.stat?.isDirectory)
+      files = dirs.concat(files.filter(f => ! f.stat?.isDirectory))
+
       this.files.data = 
         files.map(r => {
           return {
@@ -54,7 +63,8 @@ export class FileListComponent implements OnInit, AfterViewInit {
             icon: r.stat?.isDirectory ? 'folder' : 'description',
             link: r.stat?.isDirectory ? '/explorer/' + window.encodeURIComponent(r.path) : undefined,
             size: formatSize(r.stat?.size), 
-            lastChanged: toDate(r.stat?.mtime)}
+            lastChanged: toDate(r.stat?.mtime)
+          }
         })
     })
   }
@@ -67,8 +77,8 @@ function toDate(timestamp?: string): string {
 
 function formatSize(bytes?: number): string {
   if(typeof bytes === 'number') {
-    if (bytes > 1000000) return bytes / 1000000 + ' MB'
-    if (bytes > 1000) return bytes / 1000 + ' KB'
+    if (bytes > 1000000) return Math.floor(bytes / 1000000) + ' MB'
+    if (bytes > 1000) return Math.floor(bytes / 1000) + ' KB'
     return bytes + ' B'
   } else {
     return ''

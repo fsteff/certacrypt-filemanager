@@ -3,7 +3,7 @@ import { IpcMain, dialog } from "electron";
 import fs from 'fs'
 import { MainEventHandler } from "./MainEventHandler";
 import { IDriveEventHandler, FileDownload , Stat, readdirResult} from "./EventInterfaces";
-import { electron } from "node:process";
+import unixify from 'unixify'
 
 export default class DriveEventHandler extends MainEventHandler implements IDriveEventHandler{
     private drive: Hyperdrive
@@ -37,8 +37,7 @@ export default class DriveEventHandler extends MainEventHandler implements IDriv
     }
 
     async downloadFile(path: string): Promise<number> {
-        const parts = path.split('/').filter(p => p.length > 0)
-        const filename = parts[parts.length-1]
+        const filename = filenameFromPath(path)
         const stat = await this.stat(path)
         const state: FileDownload = {filename: path, size: stat.size, downloaded: 0}
         const idx = this.downloads.length
@@ -62,4 +61,43 @@ export default class DriveEventHandler extends MainEventHandler implements IDriv
     async getDownloadStates(): Promise<FileDownload[]> {
         return this.downloads
     }
+
+    async uploadFile(path: string): Promise<string[]> {
+        const selections = await dialog.showOpenDialog({message: "Upload File(s)", properties: ['openFile', "multiSelections"]})
+        if(selections.canceled) return Promise.reject()
+
+        const files = selections.filePaths
+        const existing = await this.readdir(path)
+
+        const uploads: Array<{source: string, target: string}> = []
+        for(const sourcePath of files) {
+            const filename = filenameFromPath(sourcePath)
+            let targetName = unixify(path) + '/' + filename
+            if(existing.findIndex(f => f.name === filename) >= 0) {
+                let num = 2
+                while(existing.findIndex(f => f.name === (filename + '_' + num)) >= 0) {
+                    num++
+                }
+                targetName += '_' + num
+            }
+            uploads.push({source: sourcePath, target: targetName})
+        }
+
+        for(const {source, target} of uploads) {
+            const sourceStream = fs.createReadStream(source)
+            const targetStream = this.drive.createWriteStream(target, {db: {encrypted: true}})
+            sourceStream.pipe(targetStream)
+            await new Promise((resolve, reject) => {
+                sourceStream.on('error', err => reject(err))
+                targetStream.on('end', () => resolve(undefined))
+            })
+        }
+        return uploads.map(u => u.target)
+    }
+}
+
+function filenameFromPath(path: string) {
+    const normalized = unixify(path)
+    const parts = normalized.split('/').filter(p => p.length > 0)
+    return parts[parts.length-1]
 }

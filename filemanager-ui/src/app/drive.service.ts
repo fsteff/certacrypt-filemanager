@@ -2,13 +2,29 @@ import { Injectable } from '@angular/core'
 import globals from '../../../src/globals'
 import { Observable, from } from 'rxjs'
 import { readdirResult, FileDownload } from '../../../src/EventInterfaces'
+import { ActivatedRoute } from '@angular/router'
 
 @Injectable({
   providedIn: 'root'
 })
 export class DriveService {
+  private readonly reloadListeners = []
 
-  constructor() { }
+  observePath(route: ActivatedRoute) {
+    let currentPath: string
+    const path = new Observable<string>(subscriber => {
+      route.paramMap.subscribe(params => {
+        currentPath = window.decodeURIComponent(params.get('path'))
+        subscriber.next(currentPath)
+      })
+      this.reloadListeners.push(() => subscriber.next(currentPath))
+    })
+    return path
+  }
+
+  reload() {
+    this.reloadListeners.forEach(listener => listener())
+  }
 
   readdir(path?: string) : Observable<readdirResult[]>{
     const dir = from(globals.drive.readdir(path || '/'))
@@ -36,5 +52,9 @@ export class DriveService {
         }
       }
     })
+  }
+
+  async uploadFile(path: string): Promise<string[]> {
+    return await globals.drive.uploadFile(path)
   }
 }
