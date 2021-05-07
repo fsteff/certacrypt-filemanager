@@ -39,6 +39,10 @@ export class DriveService {
     return globals.drive.mkdir(path)
   }
 
+  async unlink(path: string): Promise<string>{
+    return globals.drive.unlink(path)
+  }
+
   async downloadFile(path: string): Promise<Observable<FileDownload>> {
     const idx = await globals.drive.downloadFile(path)
     return new Observable<FileDownload>((subscriber) => {

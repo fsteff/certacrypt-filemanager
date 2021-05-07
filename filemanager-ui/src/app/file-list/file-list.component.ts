@@ -1,4 +1,3 @@
-import { UrlResolver } from '@angular/compiler'
 import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core'
 import { MatSort } from '@angular/material/sort'
 import { MatTableDataSource } from '@angular/material/table'
@@ -46,6 +45,11 @@ export class FileListComponent implements OnInit, AfterViewInit {
 
   onShare(file: FileData) {
     console.log('onShare: ' + file.path)
+  }
+
+  async onDelete(file: FileData) {
+    console.log('deleted: ' + await this.drive.unlink(file.path))
+    this.drive.reload()
   }
 
   getFiles(path: string) { 

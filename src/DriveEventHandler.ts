@@ -21,9 +21,9 @@ export default class DriveEventHandler extends MainEventHandler implements IDriv
         await this.drive.promises.mkdir(path, {db: {encrypted: true}})
         return path
     }
-    async rmdir(path: string): Promise<string> {
-        return Promise.reject(new Error('not implemented'))
-        //return this.drive.promises.rmdir(path)
+    async unlink(path: string): Promise<string> {
+        await this.drive.promises.unlink(path, {db:{encrypted: true}})
+        return path
     }
     async stat(path: string): Promise<Stat>{
         return this.drive.promises.stat(path, {db: {encrypted: true}, resolve: true})

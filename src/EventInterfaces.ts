@@ -31,7 +31,7 @@ export interface ICertaCryptEventHandler {
 export interface IDriveEventHandler {
     readdir(path: string): Promise<readdirResult[]>
     mkdir(path: string): Promise<string>
-    rmdir(path: string): Promise<string>
+    unlink(path: string): Promise<string>
     stat(path: string): Promise<Stat>
 
     readFile(path: string, encoding?: string): Promise<Uint8Array|string>
