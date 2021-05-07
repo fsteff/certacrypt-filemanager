@@ -4,6 +4,7 @@ import { NgModule } from '@angular/core';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms'
 import { MatCardModule } from '@angular/material/card'
 import { MatToolbarModule } from '@angular/material/toolbar'
 import { MatTableModule}  from '@angular/material/table'
@@ -13,7 +14,6 @@ import { MatFormFieldModule } from '@angular/material/form-field'
 import { MatButtonModule } from '@angular/material/button'
 import { MatDividerModule } from '@angular/material/divider'
 import { MatGridListModule } from '@angular/material/grid-list'
-import { FormsModule , ReactiveFormsModule} from '@angular/forms';
 
 import { AddressBarComponent } from './address-bar/address-bar.component';
 import { FileListComponent } from './file-list/file-list.component';
@@ -37,10 +37,10 @@ import { ToolbarComponent } from './toolbar/toolbar.component';
     MatTableModule,
     MatIconModule,
     MatMenuModule,
-    MatFormFieldModule,
     MatButtonModule,
     MatDividerModule,
     MatGridListModule,
+    MatFormFieldModule,
     FormsModule,
     ReactiveFormsModule
   ],

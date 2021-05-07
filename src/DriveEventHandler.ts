@@ -17,10 +17,11 @@ export default class DriveEventHandler extends MainEventHandler implements IDriv
     async readdir(path: string): Promise<Array<readdirResult>> {
         return <Promise<readdirResult[]>> this.drive.promises.readdir(path, {db: {encrypted: true}, includeStats: true})
     }
-    async mkdir(path: string): Promise<void> {
-        return this.drive.promises.mkdir(path, {db: {encrypted: true}})
+    async mkdir(path: string): Promise<string> {
+        await this.drive.promises.mkdir(path, {db: {encrypted: true}})
+        return path
     }
-    async rmdir(path: string): Promise<void> {
+    async rmdir(path: string): Promise<string> {
         return Promise.reject(new Error('not implemented'))
         //return this.drive.promises.rmdir(path)
     }
