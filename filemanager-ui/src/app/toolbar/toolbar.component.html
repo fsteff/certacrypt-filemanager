@@ -2,13 +2,7 @@
     <div class="toolbar-element">
         <button mat-icon-button (click)="onReload()"><mat-icon>sync</mat-icon></button>
     </div>
-    <div class="toolbar-element">
-        <input matInput placeholder="hyper://..." #shareInput>
-        <button mat-raised-button (click)="onMount(shareInput.value)">Mount</button>
-    </div>
-    <div class="toolbar-element">
-        <mat-divider [vertical]="true"></mat-divider>
-    </div>
+    
     <div class="toolbar-element">
         <button mat-raised-button (click)="onUpload()">Upload File</button>
     </div>
@@ -21,10 +15,16 @@
     <mat-menu #mkdirmenu="matMenu">
         <form>
             <mat-form-field mat-menu-item>
-                <input matInput type="text" placeholder="Name" #mkdirName (click)="$event.stopPropagation()" [formControl]="mkdirFormControl">
+                <input matInput type="text" placeholder="Name" #mkdirName (click)="$event.stopPropagation()">
                 <button mat-raised-button (click)="onMkdir(mkdirName.value)">create</button>
-                <mat-error></mat-error>
             </mat-form-field>
         </form>
     </mat-menu>
+    <div class="toolbar-element">
+        <mat-divider [vertical]="true"></mat-divider>
+    </div>
+    <div class="toolbar-element">
+        <input matInput placeholder="hyper://..." #shareInput>
+        <button mat-raised-button (click)="onMount(shareInput.value)">Mount</button>
+    </div>
 </div>

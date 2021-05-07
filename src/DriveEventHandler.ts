@@ -65,7 +65,7 @@ export default class DriveEventHandler extends MainEventHandler implements IDriv
 
     async uploadFile(path: string): Promise<string[]> {
         const selections = await dialog.showOpenDialog({message: "Upload File(s)", properties: ['openFile', "multiSelections"]})
-        if(selections.canceled) return Promise.reject()
+        if(selections.canceled || selections.filePaths.length === 0) return Promise.reject()
 
         const files = selections.filePaths
         const existing = await this.readdir(path)

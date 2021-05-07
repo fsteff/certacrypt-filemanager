@@ -10,7 +10,6 @@ import { MatToolbarModule } from '@angular/material/toolbar'
 import { MatTableModule}  from '@angular/material/table'
 import { MatIconModule } from '@angular/material/icon'
 import { MatMenuModule } from '@angular/material/menu'
-import { MatFormFieldModule } from '@angular/material/form-field'
 import { MatButtonModule } from '@angular/material/button'
 import { MatDividerModule } from '@angular/material/divider'
 import { MatGridListModule } from '@angular/material/grid-list'
@@ -32,6 +31,8 @@ import { ToolbarComponent } from './toolbar/toolbar.component';
     BrowserModule,
     AppRoutingModule,
     BrowserAnimationsModule,
+    FormsModule,
+    ReactiveFormsModule,
     MatCardModule,
     MatToolbarModule,
     MatTableModule,
@@ -39,10 +40,7 @@ import { ToolbarComponent } from './toolbar/toolbar.component';
     MatMenuModule,
     MatButtonModule,
     MatDividerModule,
-    MatGridListModule,
-    MatFormFieldModule,
-    FormsModule,
-    ReactiveFormsModule
+    MatGridListModule
   ],
   providers: [],
   bootstrap: [AppComponent]
