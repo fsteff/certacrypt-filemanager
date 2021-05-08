@@ -1,17 +1,22 @@
-import { Hyperdrive } from "certacrypt";
+import { CertaCrypt, Directory, Hyperdrive, createUrl, ShareGraphObject } from "certacrypt";
 import { IpcMain, dialog } from "electron";
 import fs from 'fs'
 import { MainEventHandler } from "./MainEventHandler";
 import { IDriveEventHandler, FileDownload , Stat, readdirResult} from "./EventInterfaces";
 import unixify from 'unixify'
+import { GraphObject, Vertex } from "hyper-graphdb";
 
 export default class DriveEventHandler extends MainEventHandler implements IDriveEventHandler{
-    private drive: Hyperdrive
     private downloads: Array<FileDownload> = []
 
-    constructor(app: IpcMain, hyperdrive: Hyperdrive) {
+    constructor(app: IpcMain, private drive: Hyperdrive, private certacrypt: CertaCrypt) {
         super(app, 'drive')
-        this.drive = hyperdrive
+    }
+
+    static async init(app: IpcMain, certacrypt: CertaCrypt): Promise<DriveEventHandler> {
+        const rootVertex = <Vertex<Directory>> await certacrypt.path('/apps/filemanager')
+        const drive = await certacrypt.drive(rootVertex)
+        return new DriveEventHandler(app, drive, certacrypt)
     }
 
     async readdir(path: string): Promise<Array<readdirResult>> {
@@ -94,6 +99,22 @@ export default class DriveEventHandler extends MainEventHandler implements IDriv
             })
         }
         return uploads.map(u => u.target)
+    }
+
+    async shareFile(path: string): Promise<string> {
+        const file = await this.certacrypt.path('/apps/filemanager' + path)
+        const share = await this.certacrypt.share(file)
+        const key = this.certacrypt.graph.getKey(share)
+        return createUrl(share, key)
+    }
+
+    async mountShare(url: string, path: string): Promise<string> {
+        const parts = path.split('/').filter(p => p.length > 0)
+        const filename = parts[parts.length-1]
+        const parentPath = '/apps/filemanager/' + parts.slice(0, parts.length-1).join('/')
+        const parent = await this.certacrypt.path(parentPath)
+        await this.certacrypt.mountShare(parent, filename, url)
+        return path
     }
 }
 

@@ -41,4 +41,7 @@ export interface IDriveEventHandler {
     getDownloadStates(): Promise<FileDownload[]>
 
     uploadFile(path: string): Promise<string[]>
+
+    shareFile(path: string): Promise<string>
+    mountShare(url: string, path: string): Promise<string>
 }

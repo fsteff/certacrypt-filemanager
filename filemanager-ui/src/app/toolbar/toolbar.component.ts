@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroupDirective, NgForm, ValidationErrors, Validators } from '@angular/forms';
 import { ErrorStateMatcher } from '@angular/material/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { DriveService } from '../drive.service';
 
 @Component({
@@ -17,21 +17,23 @@ export class ToolbarComponent implements OnInit {
 
   private currentPath: string
 
-  constructor(private drive: DriveService, private route: ActivatedRoute) { }
+  constructor(private drive: DriveService, private activatedRoute: ActivatedRoute, private router: Router) { }
 
   ngOnInit(): void {
 
-    this.drive.observePath(this.route).subscribe(async path => {
+    this.drive.observePath(this.activatedRoute).subscribe(async path => {
       this.currentPath = path
     })
   }
 
-  onMount(value: string) {
-    console.log(value)
+  async onMount(url: string, target: string) {
+    const path = this.currentPath + '/' + target
+    await this.drive.mountShare(url, path)
+    this.drive.reload()
   }
 
   async onUpload() {
-    console.log(await this.drive.uploadFile(this.currentPath))
+    await this.drive.uploadFile(this.currentPath)
     this.drive.reload()
   }
 

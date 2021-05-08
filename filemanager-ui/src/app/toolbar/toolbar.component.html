@@ -25,6 +25,14 @@
     </div>
     <div class="toolbar-element">
         <input matInput placeholder="hyper://..." #shareInput>
-        <button mat-raised-button (click)="onMount(shareInput.value)">Mount</button>
+        <button mat-raised-button [matMenuTriggerFor]="mountmenu">Mount</button>
     </div>
+    <mat-menu #mountmenu="matMenu">
+        <form>
+            <mat-form-field mat-menu-item>
+                <input matInput type="text" placeholder="Name" #mountName (click)="$event.stopPropagation()">
+                <button mat-raised-button (click)="onMount(shareInput.value, mountName.value)">mount</button>
+            </mat-form-field>
+        </form>
+    </mat-menu>
 </div>

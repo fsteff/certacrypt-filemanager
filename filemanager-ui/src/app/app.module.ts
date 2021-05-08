@@ -13,11 +13,13 @@ import { MatMenuModule } from '@angular/material/menu'
 import { MatButtonModule } from '@angular/material/button'
 import { MatDividerModule } from '@angular/material/divider'
 import { MatGridListModule } from '@angular/material/grid-list'
+import { MatDialogModule } from '@angular/material/dialog'
 
 import { AddressBarComponent } from './address-bar/address-bar.component';
 import { FileListComponent } from './file-list/file-list.component';
 import { ExplorerComponent } from './explorer/explorer.component';
 import { ToolbarComponent } from './toolbar/toolbar.component';
+import { ShareDialogComponent } from './share-dialog/share-dialog.component';
 
 @NgModule({
   declarations: [
@@ -25,7 +27,8 @@ import { ToolbarComponent } from './toolbar/toolbar.component';
     AddressBarComponent,
     FileListComponent,
     ExplorerComponent,
-    ToolbarComponent
+    ToolbarComponent,
+    ShareDialogComponent
   ],
   imports: [
     BrowserModule,
@@ -40,7 +43,8 @@ import { ToolbarComponent } from './toolbar/toolbar.component';
     MatMenuModule,
     MatButtonModule,
     MatDividerModule,
-    MatGridListModule
+    MatGridListModule,
+    MatDialogModule
   ],
   providers: [],
   bootstrap: [AppComponent]

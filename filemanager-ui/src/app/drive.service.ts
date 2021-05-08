@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core'
 import globals from '../../../src/globals'
 import { Observable, from } from 'rxjs'
-import { readdirResult, FileDownload } from '../../../src/EventInterfaces'
+import { readdirResult, FileDownload, Stat } from '../../../src/EventInterfaces'
 import { ActivatedRoute } from '@angular/router'
 
 @Injectable({
@@ -24,6 +24,10 @@ export class DriveService {
 
   reload() {
     this.reloadListeners.forEach(listener => listener())
+  }
+
+  async stat(path: string): Promise<Stat> {
+    return globals.drive.stat(path)
   }
 
   readdir(path?: string) : Observable<readdirResult[]>{
@@ -63,6 +67,14 @@ export class DriveService {
   }
 
   async uploadFile(path: string): Promise<string[]> {
-    return await globals.drive.uploadFile(path)
+    return globals.drive.uploadFile(path)
+  }
+
+  async shareFile(path: string): Promise<string>{
+    return globals.drive.shareFile(path)
+  }
+
+  async mountShare(url: string, path: string): Promise<string> {
+    return globals.drive.mountShare(url, path)
   }
 }

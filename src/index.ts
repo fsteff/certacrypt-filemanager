@@ -40,22 +40,7 @@ async function startServer() {
         const json = JSON.stringify(config)
         await fs.writeFile(configFile, json, 'utf-8')
     }
-    const rootVertex = <Vertex<Directory>> await certacrypt.path('/apps/filemanager')
-    const drive = await certacrypt.drive(rootVertex)
+    await DriveEventHandler.init(ipcMain, certacrypt)
 
-    const api = new DriveEventHandler(ipcMain, drive)
-    const files = await api.readdir('/')
-    if(files.findIndex(f => f.name === 'readme.txt') < 0) {
-        await api.writeFile('readme.txt', 'hello world')
-    }
-
-    if(files.findIndex(f => f.name === 'pics') < 0) {
-        await api.mkdir('pics')
-    }
-    const sub = await api.readdir('/pics')
-    if(sub.findIndex(f => f.name === 'hello.txt') < 0) {
-        await api.writeFile('/pics/hello.txt', 'salut')
-    }
-    
     Main.main(app, BrowserWindow)
 }

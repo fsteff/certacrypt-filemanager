@@ -1,10 +1,12 @@
 import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core'
 import { MatSort } from '@angular/material/sort'
 import { MatTableDataSource } from '@angular/material/table'
+import { MatDialog } from '@angular/material/dialog'
 import { ActivatedRoute } from '@angular/router'
 import { DriveService } from '../drive.service'
+import { ShareDialogComponent } from '../share-dialog/share-dialog.component'
 
-interface FileData {
+export interface FileData {
   name: string, 
   isFile?: boolean, 
   link?: string,
@@ -25,7 +27,7 @@ export class FileListComponent implements OnInit, AfterViewInit {
 
   @ViewChild(MatSort) sort: MatSort;
 
-  constructor (private drive: DriveService, private route: ActivatedRoute) {}
+  constructor (private drive: DriveService, private route: ActivatedRoute, private dialog: MatDialog) {}
 
   ngOnInit(): void {
     this.files = new MatTableDataSource()
@@ -43,8 +45,8 @@ export class FileListComponent implements OnInit, AfterViewInit {
     })
   }
 
-  onShare(file: FileData) {
-    console.log('onShare: ' + file.path)
+  async onShare(file: FileData) {
+    this.dialog.open(ShareDialogComponent, {width: '32em', data: file})
   }
 
   async onDelete(file: FileData) {

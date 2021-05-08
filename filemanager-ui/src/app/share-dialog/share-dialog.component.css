@@ -1,0 +1,13 @@
+input {
+    width: 55%;
+    height: 36px;
+    border: none;
+    text-decoration: underline;
+    text-overflow: ellipsis;
+}
+
+button {
+    width: 35%;
+    position: relative;
+    float: right;
+}

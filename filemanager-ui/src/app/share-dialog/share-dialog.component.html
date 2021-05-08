@@ -1,0 +1,13 @@
+<h1>Share</h1>
+<div mat-dialog-content>
+    <p>
+        <input mat-input value={{url}}  #urlInput>
+        <button mat-flat-button color="primary" (click)="onCopy()">Copy to Clipboard</button>
+    </p>
+    
+    <mat-icon color="primary">info</mat-icon>
+    <p>Anyone with that link can read the shared data. The encryption key used to secure your data is contained in the url.</p>
+</div>
+<div mat-dialog-actions>
+    <button mat-stroked-button [mat-dialog-close]="url">Close</button>
+</div>
