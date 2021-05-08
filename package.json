@@ -6,7 +6,8 @@
   "scripts": {
     "build-ui": "cd ./filemanager-ui && npm run build",
     "electron": "electron dist/index.js",
-    "electron-tsc": "tsc && npm run build-ui && npm run electron"
+    "electron-tsc": "tsc && npm run build-ui && npm run electron",
+    "distribute": "electron-packager . --ignore=\"filemanager-ui|.*\\.ts|.*\\.js.map\" --overwrite"
   },
   "repository": {
     "type": "git",
@@ -24,7 +25,8 @@
   },
   "homepage": "https://github.com/fsteff/certacrypt-filemanager#readme",
   "devDependencies": {
-    "electron": "^12.0.5"
+    "electron": "^12.0.5",
+    "electron-packager": "^15.2.0"
   },
   "dependencies": {
     "@types/node": "^15.0.0",

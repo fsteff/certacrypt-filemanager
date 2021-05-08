@@ -9,6 +9,7 @@ export default class Main {
         if (process.platform !== 'darwin') {
             Main.application.quit();
         }
+        process.exit()
     }
 
     private static onClose() {
@@ -30,7 +31,7 @@ export default class Main {
             }
         });
         Main.mainWindow
-            .loadURL('file://' + __dirname + '/filemanager-ui/index.html');
+            .loadURL('file://' + __dirname + '/ui/index.html');
         Main.mainWindow.on('closed', Main.onClose);
         Main.mainWindow.webContents.openDevTools();
     }

@@ -7,15 +7,23 @@ import { CertaCrypt, Directory, enableDebugLogging } from 'certacrypt'
 import { DefaultCrypto } from 'certacrypt-crypto'
 
 import DriveEventHandler from './DriveEventHandler'
-import { Vertex } from 'hyper-graphdb';
 
 app.on('ready', startServer)
 
 async function startServer() {
-    const server = new Server()
-    await server.ready()
-    const client = new Client()
-    await client.ready()
+    let client
+    try {
+        client = new Client()
+        await client.ready()
+    } catch(e) {
+        console.log('no hyperspace server running, starting up a new one')
+        const server = new Server()
+        await server.ready()
+        client = new Client()
+        await client.ready()
+    }
+
+    client.network.on('peer-add', peer => console.log(peer))
 
     const crypto = new DefaultCrypto()
 
@@ -28,6 +36,8 @@ async function startServer() {
         })
 
     const certacrypt = new CertaCrypt(client.corestore(), crypto, config.sessionUrl)
+    client.network.configure(client.corestore().get((await certacrypt.sessionRoot).getFeed()), {announce: true, lookup: true})
+
     enableDebugLogging()
     if(!config.sessionUrl) {
         const driveRoot = certacrypt.graph.create<Directory>()
