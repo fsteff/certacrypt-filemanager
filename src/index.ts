@@ -23,6 +23,14 @@ async function startServer() {
         await client.ready()
     }
 
+    const corestore = client.corestore()
+    const oldGet = corestore.get
+    corestore.get = function(...args) {
+        const feed = oldGet.call(corestore, ...args)
+        client.replicate(feed).then(() => console.log('replicating feed ' + feed.key.toString('hex')))
+        return feed
+    }
+
     client.network.on('peer-add', peer => console.log(peer))
 
     const crypto = new DefaultCrypto()
@@ -35,8 +43,8 @@ async function startServer() {
             return {}
         })
 
-    const certacrypt = new CertaCrypt(client.corestore(), crypto, config.sessionUrl)
-    client.network.configure(client.corestore().get((await certacrypt.sessionRoot).getFeed()), {announce: true, lookup: true})
+    const certacrypt = new CertaCrypt(corestore, crypto, config.sessionUrl)
+    //client.network.configure(corestore.get((await certacrypt.sessionRoot).getFeed()), {announce: true, lookup: true})
 
     enableDebugLogging()
     if(!config.sessionUrl) {
