@@ -7,7 +7,7 @@
     "build-ui": "cd ./filemanager-ui && npm run build",
     "electron": "electron dist/index.js",
     "electron-tsc": "tsc && npm run build-ui && npm run electron",
-    "distribute": "electron-packager . --ignore=\"filemanager-ui|.*\\.ts|.*\\.js.map\" --overwrite"
+    "distribute": "electron-packager . --ignore=\"filemanager-ui|.*\\.ts|.*\\.js.map|.*\\.zip\" --overwrite"
   },
   "repository": {
     "type": "git",
