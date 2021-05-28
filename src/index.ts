@@ -60,5 +60,7 @@ async function startServer() {
     }
     await DriveEventHandler.init(ipcMain, certacrypt)
 
+    console.log(await certacrypt.debugDrawGraph())
+
     Main.main(app, BrowserWindow)
 }
