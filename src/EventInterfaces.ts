@@ -20,6 +20,8 @@ export type Stat = {
     isSymlink?: boolean
 }
 
+export type Peer = {};
+
 export type FileDownload = {filename: string, size: number, downloaded: number, error?: Error, localPath?: string}
 
 export type readdirResult = { name: string, path: string, stat: Stat }
@@ -44,4 +46,6 @@ export interface IDriveEventHandler {
 
     shareFile(path: string): Promise<string>
     mountShare(url: string, path: string): Promise<string>
+
+    lookupPeers(url: string): Promise<Peer>
 }

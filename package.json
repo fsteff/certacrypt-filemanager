@@ -37,6 +37,7 @@
     "hyper-graphdb": "git+https://github.com/fsteff/hyper-graphdb.git",
     "hyperobjects": "git+https://github.com/fsteff/hyperobjects.git",
     "hyperspace": "^3.19.0",
+    "is-loopback-addr": "^1.0.1",
     "unixify": "^1.0.0"
   }
 }

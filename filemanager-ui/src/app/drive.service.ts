@@ -75,6 +75,9 @@ export class DriveService {
   }
 
   async mountShare(url: string, path: string): Promise<string> {
+    //console.log('waiting for peers')
+    //const firstPeer = await globals.drive.lookupPeers(url)
+    //console.log('first peer: ' + firstPeer)
     return globals.drive.mountShare(url, path)
   }
 }

@@ -7,6 +7,7 @@ import { CertaCrypt, Directory, enableDebugLogging } from 'certacrypt'
 import { DefaultCrypto } from 'certacrypt-crypto'
 
 import DriveEventHandler from './DriveEventHandler'
+import { Feed } from 'hyperobjects';
 
 app.on('ready', startServer)
 
@@ -25,13 +26,35 @@ async function startServer() {
 
     const corestore = client.corestore()
     const oldGet = corestore.get
+    const cores = new Map<string, Feed>()
     corestore.get = function(...args) {
+        let key: string
+        if(args.length > 0) {
+            if(Buffer.isBuffer(args[0])) key = args[0].toString('hex')
+            else if (typeof args[0] === 'string') key = args[0]
+            else if(typeof args[0] === 'object' && args[0].key) {
+                if(Buffer.isBuffer(args[0].key)) key = args[0].toString('hex')
+                else if (typeof args[0].key === 'string') key = args[0].key
+            }
+            if(key && cores.has(key)) {
+                return cores.get(key)
+            }
+        }
+
         const feed = oldGet.call(corestore, ...args)
-        client.replicate(feed).then(() => console.log('replicating feed ' + feed.key.toString('hex')))
+        if(key) {
+            cores.set(key, feed)
+        } else {
+            feed.once('ready', () => cores.set(feed.key.toString('hex'), feed))
+        }
+        
+        client.replicate(feed).then(() => {
+            console.log('replicating feed ' + feed.key.toString('hex'))
+            if(feed.peers.length > 0) console.log('already have peers for feed ' + feed.key.toString('hex') + ': ' + feed.peers.map(p => p.remoteAddress).join(', '))
+            feed.on('peer-add', peer => console.log('peer-add for feed ' + feed.key.toString('hex') + ': ' + peer.remoteAddress + '|' + peer.type))
+        })
         return feed
     }
-
-    client.network.on('peer-add', peer => console.log(peer))
 
     const crypto = new DefaultCrypto()
 
@@ -58,7 +81,7 @@ async function startServer() {
         const json = JSON.stringify(config)
         await fs.writeFile(configFile, json, 'utf-8')
     }
-    await DriveEventHandler.init(ipcMain, certacrypt)
+    await DriveEventHandler.init(ipcMain, certacrypt, client)
 
     console.log(await certacrypt.debugDrawGraph())
 

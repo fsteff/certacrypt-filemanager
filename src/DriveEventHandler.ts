@@ -1,22 +1,23 @@
-import { CertaCrypt, Directory, Hyperdrive, createUrl, ShareGraphObject } from "certacrypt";
+import { CertaCrypt, Directory, Hyperdrive, createUrl, parseUrl } from "certacrypt";
 import { IpcMain, dialog } from "electron";
 import fs from 'fs'
 import { MainEventHandler } from "./MainEventHandler";
-import { IDriveEventHandler, FileDownload , Stat, readdirResult} from "./EventInterfaces";
+import { IDriveEventHandler, FileDownload , Stat, readdirResult, Peer} from "./EventInterfaces";
 import unixify from 'unixify'
 import { GraphObject, Vertex } from "hyper-graphdb";
+import Client from '@hyperspace/client'
 
 export default class DriveEventHandler extends MainEventHandler implements IDriveEventHandler{
     private downloads: Array<FileDownload> = []
 
-    constructor(app: IpcMain, private drive: Hyperdrive, private certacrypt: CertaCrypt) {
+    constructor(app: IpcMain, private drive: Hyperdrive, private certacrypt: CertaCrypt, private hyperspace: Client) {
         super(app, 'drive')
     }
 
-    static async init(app: IpcMain, certacrypt: CertaCrypt): Promise<DriveEventHandler> {
+    static async init(app: IpcMain, certacrypt: CertaCrypt, hyperspace: Client): Promise<DriveEventHandler> {
         const rootVertex = <Vertex<Directory>> await certacrypt.path('/apps/filemanager')
         const drive = await certacrypt.drive(rootVertex)
-        return new DriveEventHandler(app, drive, certacrypt)
+        return new DriveEventHandler(app, drive, certacrypt, hyperspace)
     }
 
     async readdir(path: string): Promise<Array<readdirResult>> {
@@ -115,6 +116,17 @@ export default class DriveEventHandler extends MainEventHandler implements IDriv
         const parent = await this.certacrypt.path(parentPath)
         await this.certacrypt.mountShare(parent, filename, url)
         return path
+    }
+
+    async lookupPeers(url: string): Promise<Peer> {
+        const parsed = parseUrl(url)
+        const core = this.certacrypt.corestore.get({key: parsed.feed})
+        await this.hyperspace.replicate(core)
+        return new Promise((resolve, reject) => {
+            core.on('peer-add', (peer: Peer) => resolve(peer))
+            core.on('error', (err: Error) => reject(err))
+        })
+        
     }
 }
 
