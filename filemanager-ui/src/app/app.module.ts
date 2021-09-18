@@ -20,6 +20,7 @@ import { FileListComponent } from './file-list/file-list.component';
 import { ExplorerComponent } from './explorer/explorer.component';
 import { ToolbarComponent } from './toolbar/toolbar.component';
 import { ShareDialogComponent } from './share-dialog/share-dialog.component';
+import { ProfileDialogComponent } from './profile-dialog/profile-dialog.component';
 
 @NgModule({
   declarations: [
@@ -28,7 +29,8 @@ import { ShareDialogComponent } from './share-dialog/share-dialog.component';
     FileListComponent,
     ExplorerComponent,
     ToolbarComponent,
-    ShareDialogComponent
+    ShareDialogComponent,
+    ProfileDialogComponent
   ],
   imports: [
     BrowserModule,

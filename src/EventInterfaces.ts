@@ -1,3 +1,6 @@
+import { ContactProfile, GraphObjects } from 'certacrypt'
+import { GraphObject } from 'hyper-graphdb';
+
 export type Fd = number
 export type Stat = {
     dev: number,
@@ -20,6 +23,10 @@ export type Stat = {
     isSymlink?: boolean
 }
 
+export type RawGraphObject<T extends GraphObject> = Omit<{[Property in keyof T]: T[Property]}, 'typeName' | 'serialize'> 
+export type Contact = RawGraphObject<ContactProfile>
+export type Profile = RawGraphObject<GraphObjects.UserProfile>
+
 export type Peer = {};
 
 export type FileDownload = {filename: string, size: number, downloaded: number, error?: Error, localPath?: string}
@@ -28,6 +35,15 @@ export type readdirResult = { name: string, path: string, stat: Stat }
 
 export interface ICertaCryptEventHandler {
     
+}
+
+export interface IContactsEventHandler {
+    getAllContacts(): Promise<Contact[]>
+    
+    getProfile(url?: string): Promise<Profile>
+    setProfile(profile: Profile): Promise<void>
+    
+    addFriend(url: string): Promise<void>
 }
 
 export interface IDriveEventHandler {

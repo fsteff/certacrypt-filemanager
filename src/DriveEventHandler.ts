@@ -1,4 +1,4 @@
-import { CertaCrypt, Directory, Hyperdrive, createUrl, parseUrl } from "certacrypt";
+import { CertaCrypt, GraphObjects, Hyperdrive, createUrl, parseUrl } from "certacrypt";
 import { IpcMain, dialog } from "electron";
 import fs from 'fs'
 import { MainEventHandler } from "./MainEventHandler";
@@ -15,7 +15,7 @@ export default class DriveEventHandler extends MainEventHandler implements IDriv
     }
 
     static async init(app: IpcMain, certacrypt: CertaCrypt, hyperspace: Client): Promise<DriveEventHandler> {
-        const rootVertex = <Vertex<Directory>> await certacrypt.path('/apps/filemanager')
+        const rootVertex = <Vertex<GraphObjects.Directory>> await certacrypt.path('/apps/filemanager')
         const drive = await certacrypt.drive(rootVertex)
         return new DriveEventHandler(app, drive, certacrypt, hyperspace)
     }

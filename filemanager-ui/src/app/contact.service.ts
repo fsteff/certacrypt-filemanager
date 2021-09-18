@@ -1,0 +1,28 @@
+import { Injectable } from '@angular/core';
+
+import globals from '../../../src/globals'
+import {Profile, Contact} from '../../../src/EventInterfaces'
+
+@Injectable({
+  providedIn: 'root'
+})
+export class ContactService {
+
+  constructor() { }
+
+  getProfile(userUrl?: string): Promise<Profile> {
+    return globals.contacts.getProfile(userUrl)
+  }
+
+  setProfile(profile: Profile) {
+    return globals.contacts.setProfile(profile)
+  }
+
+  addFriend(userUrl: string) {
+    return globals.contacts.addFriend(userUrl)
+  }
+
+  getAllContacts(): Promise<Contact[]> {
+    return globals.contacts.getAllContacts()
+  }
+}

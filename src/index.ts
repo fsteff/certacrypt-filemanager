@@ -3,10 +3,11 @@ import { app, BrowserWindow, ipcMain, protocol } from 'electron'
 import { promises as fs } from 'fs'
 import Main from './Main';
 
-import { CertaCrypt, Directory, enableDebugLogging } from 'certacrypt'
+import { CertaCrypt, GraphObjects, enableDebugLogging } from 'certacrypt'
 import { DefaultCrypto } from 'certacrypt-crypto'
 
 import DriveEventHandler from './DriveEventHandler'
+import ContactsEventHandler from './ContactsEventHandler'
 import { Feed } from 'hyperobjects';
 
 app.on('ready', startServer)
@@ -66,12 +67,13 @@ async function startServer() {
             return {}
         })
 
+    enableDebugLogging()
+
     const certacrypt = new CertaCrypt(corestore, crypto, config.sessionUrl)
     //client.network.configure(corestore.get((await certacrypt.sessionRoot).getFeed()), {announce: true, lookup: true})
 
-    enableDebugLogging()
     if(!config.sessionUrl) {
-        const driveRoot = certacrypt.graph.create<Directory>()
+        const driveRoot = certacrypt.graph.create<GraphObjects.Directory>()
         await certacrypt.graph.put(driveRoot)
         const appRoot = await certacrypt.path('/apps')
         appRoot.addEdgeTo(driveRoot, 'filemanager')
@@ -82,6 +84,7 @@ async function startServer() {
         await fs.writeFile(configFile, json, 'utf-8')
     }
     await DriveEventHandler.init(ipcMain, certacrypt, client)
+    await ContactsEventHandler.init(ipcMain, certacrypt)
 
     console.log(await certacrypt.debugDrawGraph())
 
