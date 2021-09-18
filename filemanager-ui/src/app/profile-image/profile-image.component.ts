@@ -1,30 +1,46 @@
 import { AfterViewInit, Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { Contact } from '../../../../src/EventInterfaces';
 import { ContactService } from '../contact.service';
 import { DriveService } from '../drive.service';
+import { ProfileDialogComponent } from '../profile-dialog/profile-dialog.component';
 
 @Component({
   selector: 'app-profile-image',
   templateUrl: './profile-image.component.html',
   styleUrls: ['./profile-image.component.css']
 })
-export class ProfileImageComponent implements AfterViewInit {
+export class ProfileImageComponent implements OnInit {
 
   @Input()
   profile: Contact
 
   backgroundImage: string
 
-  constructor(private contacts: ContactService, private drive: DriveService) { }
+  constructor(private contacts: ContactService, private dialog: MatDialog) { }
 
-  ngAfterViewInit() {
-    //this.profile = Object.assign(this.profile || {publicUrl: ''}, {profilePicture: 'hyper://e8fbe0a24ea46e9a15c5c94ffe78f1384a8501a3a829de1b51c815aaa58dc65d/14?key=1eb8394b46e208d9279453467955cfa8370799a6d9dbfc9a72453d5f3305fb8d'})
-  
+  async ngOnInit() {
+    if(!this.profile) {
+      this.profile = await this.contacts.getProfile()
+    }
+
     if(this.profile?.profilePicture) {
+      console.log('loading profile picture ' + this.profile.profilePicture)
       this.contacts.readProfileImage(this.profile.profilePicture).then(dataUri => {
         this.backgroundImage = dataUri
       })
+    } else {
+      console.log('no profile picture found')
     }
+  }
+
+  onClick() {
+    const dialogRef = this.dialog.open(ProfileDialogComponent, {width: '80%', maxWidth: '32em', data: {profile: this.profile, writeable: true, image: this.backgroundImage}})
+    dialogRef.afterClosed().subscribe(() => {
+      this.contacts.readProfileImage(this.profile.profilePicture).then(dataUri => {
+        this.backgroundImage = dataUri
+      })
+    })
   }
 
 }

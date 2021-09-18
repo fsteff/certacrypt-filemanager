@@ -60,7 +60,7 @@ export interface IDriveEventHandler {
     downloadFile(path: string): Promise<number>
     getDownloadStates(): Promise<FileDownload[]>
 
-    uploadFile(path: string): Promise<string[]>
+    uploadFile(path: string, multiple: boolean): Promise<string[]>
 
     shareFile(path: string): Promise<string>
     mountShare(url: string, path: string): Promise<string>

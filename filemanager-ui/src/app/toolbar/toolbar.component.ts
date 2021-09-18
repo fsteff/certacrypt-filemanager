@@ -1,10 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl, FormGroupDirective, NgForm, ValidationErrors, Validators } from '@angular/forms';
-import { ErrorStateMatcher } from '@angular/material/core';
+import { FormControl, ValidationErrors, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DriveService } from '../drive.service';
 import { ContactService } from '../contact.service';
-import { ProfileImageComponent } from '../profile-image/profile-image.component';
 import { Contact } from '../../../../src/EventInterfaces';
 
 @Component({
@@ -19,17 +17,13 @@ export class ToolbarComponent implements OnInit {
   ])
 
   private currentPath: string
-  public userProfile: Contact
 
-  constructor(private drive: DriveService, private contacts: ContactService, private activatedRoute: ActivatedRoute, private router: Router) { }
+  constructor(private drive: DriveService, private activatedRoute: ActivatedRoute, private router: Router) { }
 
   ngOnInit(): void {
 
     this.drive.observePath(this.activatedRoute).subscribe(async path => {
       this.currentPath = path
-    })
-    this.contacts.getProfile().then(profile => {
-      this.userProfile = profile
     })
   }
 

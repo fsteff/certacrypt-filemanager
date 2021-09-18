@@ -1,6 +1,6 @@
 <div class="toolbar-container">
     <div class="toolbar-element">
-        <app-profile-image [profile]="userProfile"></app-profile-image>
+        <app-profile-image></app-profile-image>
     </div>
     <div class="toolbar-element">
         <button mat-icon-button (click)="onReload()"><mat-icon>sync</mat-icon></button>
@@ -12,30 +12,40 @@
     <div class="toolbar-element">
         <mat-divider [vertical]="true"></mat-divider>
     </div>
+    
     <div class="toolbar-element">
         <button mat-raised-button [matMenuTriggerFor]="mkdirmenu"><mat-icon>create_new_folder</mat-icon></button>
     </div>
-    <mat-menu #mkdirmenu="matMenu">
-        <form>
-            <mat-form-field mat-menu-item>
-                <input matInput type="text" placeholder="Name" #mkdirName (click)="$event.stopPropagation()">
+    
+    <mat-menu #mkdirmenu="matMenu" class="wide-matmenu">
+        <div mat-menu-item>
+            <form>
+                <!--<mat-form-field appearance="outline">-->
+                    <input matInput type="text" placeholder="Name" #mkdirName (click)="$event.stopPropagation()">
+                <!--</mat-form-field-->
                 <button mat-raised-button (click)="onMkdir(mkdirName.value)">create</button>
-            </mat-form-field>
-        </form>
+            </form>
+        </div>
     </mat-menu>
     <div class="toolbar-element">
         <mat-divider [vertical]="true"></mat-divider>
     </div>
     <div class="toolbar-element">
-        <input matInput placeholder="hyper://..." #shareInput>
+        <!--<mat-form-field appearance="outline">-->
+            <input matInput type="text" style="background-color: white;" placeholder="hyper://..." #shareInput>
+        <!--</mat-form-field>-->
         <button mat-raised-button [matMenuTriggerFor]="mountmenu">Mount</button>
+        
     </div>
     <mat-menu #mountmenu="matMenu">
-        <form>
-            <mat-form-field mat-menu-item>
-                <input matInput type="text" placeholder="Name" #mountName (click)="$event.stopPropagation()">
+        <div mat-menu-item>
+            <form>
+                <!--<mat-form-field appearance="outline">-->
+                    <input matInput type="text" placeholder="Name" #mountName (click)="$event.stopPropagation()">
+                <!--</mat-form-field>-->
                 <button mat-raised-button (click)="onMount(shareInput.value, mountName.value)">mount</button>
-            </mat-form-field>
-        </form>
+            </form>
+        </div>
     </mat-menu>
+
 </div>

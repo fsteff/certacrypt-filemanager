@@ -66,8 +66,8 @@ export class DriveService {
     })
   }
 
-  async uploadFile(path: string): Promise<string[]> {
-    return globals.drive.uploadFile(path)
+  async uploadFile(path: string, multiple = true): Promise<string[]> {
+    return globals.drive.uploadFile(path, multiple)
   }
 
   async shareFile(path: string): Promise<string>{

@@ -1,0 +1,27 @@
+.image-circle {
+    width: 8em;
+    height: 8em;
+    border: 0px;
+    border-radius: 8em;
+    background-size: 8em;
+    background-color: #ccc;
+    margin-left: calc(50% - 4.5em);
+    margin-right: calc(50% - 4.5em);
+    margin-bottom: 1em;
+}
+
+.no-image {
+    font-size: 8em;
+    color: #666;
+    float: left;
+}
+
+.centered {
+    width: 100%;
+}
+
+.upload-button {
+    margin-bottom: 1em;
+    margin-left: calc(50% - 8em);
+    width: 16em;
+}

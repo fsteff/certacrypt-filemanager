@@ -1,5 +1,6 @@
 import { CertaCrypt, GraphObjects } from "certacrypt";
-import { IpcMain } from "electron";
+import { IpcMain, dialog } from "electron";
+import { Vertex } from "hyper-graphdb";
 import { Contact, IContactsEventHandler, Profile } from "./EventInterfaces";
 import { MainEventHandler } from "./MainEventHandler";
 
@@ -47,7 +48,6 @@ export default class ContactsEventHandler extends MainEventHandler implements IC
         const data = await drive.promises.readFile(filename, {db: {encrypted: true}, encoding: 'base64'})
         return 'url(data:' + mime + ';base64,' + data + ')'
     }
-    
 }
 
 function getImageMime(filename: string) {
