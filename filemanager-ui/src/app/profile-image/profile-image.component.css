@@ -1,0 +1,14 @@
+.image-circle {
+    width: 2em;
+    height: 2em;
+    border: 0px;
+    border-radius: 2em;
+    background-size: 2em;
+    background-color: #ccc;
+}
+
+.no-image {
+    font-size: 2em;
+    color: #666;
+    float: left;
+}

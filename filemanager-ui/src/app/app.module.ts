@@ -21,6 +21,7 @@ import { ExplorerComponent } from './explorer/explorer.component';
 import { ToolbarComponent } from './toolbar/toolbar.component';
 import { ShareDialogComponent } from './share-dialog/share-dialog.component';
 import { ProfileDialogComponent } from './profile-dialog/profile-dialog.component';
+import { ProfileImageComponent } from './profile-image/profile-image.component';
 
 @NgModule({
   declarations: [
@@ -30,7 +31,8 @@ import { ProfileDialogComponent } from './profile-dialog/profile-dialog.componen
     ExplorerComponent,
     ToolbarComponent,
     ShareDialogComponent,
-    ProfileDialogComponent
+    ProfileDialogComponent,
+    ProfileImageComponent
   ],
   imports: [
     BrowserModule,

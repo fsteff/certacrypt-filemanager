@@ -16,12 +16,13 @@ export default class ContactsEventHandler extends MainEventHandler implements IC
     async getAllContacts(): Promise<Contact[]> {
         return (await this.certacrypt.contacts).getAllContacts()
     }
-    async getProfile(url?: string): Promise<Profile> {
+    async getProfile(url?: string): Promise<Contact> {
         if(url) {
             const user = await this.certacrypt.getUserByUrl(url)
-            return user.getProfile().then(profile => profile || {})
+            return user.getProfile().then(profile => Object.assign(profile || {}, {publicUrl: url}))
         } else {
-            return (await this.certacrypt.user).getProfile().then(profile => profile || {})
+            const user = await this.certacrypt.user
+            return user.getProfile().then(profile => Object.assign(profile || {}, {publicUrl: user.getPublicUrl()}))
         }
     }
     async setProfile(profile: Profile): Promise<void> {
@@ -34,5 +35,35 @@ export default class ContactsEventHandler extends MainEventHandler implements IC
         const user = await this.certacrypt.getUserByUrl(url)
         return (await this.certacrypt.contacts).addFriend(user)
     }
+
+    async readProfileImage(url: string): Promise<string> {
+        const drive = await this.certacrypt.drive(url)
+        const files = await drive.promises.readdir('/', {db: {encrypted: true}})
+        if(files.length !== 1) {
+            throw new Error('expected exactly one file from url ' + url + ' but got: ' + files)
+        }
+        const filename = <string> files[0]
+        const mime = getImageMime(filename)
+        const data = await drive.promises.readFile(filename, {db: {encrypted: true}, encoding: 'base64'})
+        return 'url(data:' + mime + ';base64,' + data + ')'
+    }
     
+}
+
+function getImageMime(filename: string) {
+    const parts = filename.split('.')
+    const ext = parts[parts.length-1].toLocaleLowerCase()
+    switch (ext) {
+        case 'png': 
+            return 'image/png'
+        case 'jpg':
+        case 'jpeg':
+            return 'image/jpeg'
+        case 'gif':
+            return 'image/gif'
+        default:
+            console.error('unknown image file extension: ' + ext)    
+            return 'image/png'
+        //throw new Error('unknown image file extension: ' + ext)
+    }
 }

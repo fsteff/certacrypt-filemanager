@@ -10,7 +10,7 @@ export class ContactService {
 
   constructor() { }
 
-  getProfile(userUrl?: string): Promise<Profile> {
+  getProfile(userUrl?: string) {
     return globals.contacts.getProfile(userUrl)
   }
 
@@ -24,5 +24,9 @@ export class ContactService {
 
   getAllContacts(): Promise<Contact[]> {
     return globals.contacts.getAllContacts()
+  }
+
+  readProfileImage(url: string) {
+    return globals.contacts.readProfileImage(url)
   }
 }

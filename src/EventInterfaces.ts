@@ -40,10 +40,12 @@ export interface ICertaCryptEventHandler {
 export interface IContactsEventHandler {
     getAllContacts(): Promise<Contact[]>
     
-    getProfile(url?: string): Promise<Profile>
+    getProfile(url?: string): Promise<Contact>
     setProfile(profile: Profile): Promise<void>
     
     addFriend(url: string): Promise<void>
+
+    readProfileImage(url: string): Promise<string> 
 }
 
 export interface IDriveEventHandler {

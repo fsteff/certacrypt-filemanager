@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { ContactService } from '../contact.service';
 
 @Component({
   selector: 'app-address-bar',
@@ -10,7 +9,7 @@ import { ContactService } from '../contact.service';
 export class AddressBarComponent implements OnInit {
   path: {name: string, link: string}[]
   
-  constructor(private route: ActivatedRoute, private contacts: ContactService) { this.path = []}
+  constructor(private route: ActivatedRoute) { this.path = []}
 
   ngOnInit(): void {
     this.route.paramMap.subscribe(params => {
@@ -24,7 +23,6 @@ export class AddressBarComponent implements OnInit {
         this.path.push({name: part, link})
       }
     })
-    this.contacts.getProfile().then(console.log)
   }
 
 }
