@@ -29,4 +29,8 @@ export class ContactService {
   readProfileImage(url: string) {
     return globals.contacts.readProfileImage(url)
   }
+
+  getUserByUrl(url: string) {
+    return globals.contacts.getUserByUrl(url)
+  }
 }

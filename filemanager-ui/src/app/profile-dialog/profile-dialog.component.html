@@ -1,4 +1,7 @@
 <div mat-dialog-content>
+    <div class="public-url">
+        <button mat-stroked-button (click)="onCopyUrl()" matTooltip="Copy profile URL to clipborad"><mat-icon>link</mat-icon><span>Share</span></button>
+    </div>
 
     <div class="image-circle" [ngStyle]="{backgroundImage: image}">
         <mat-icon *ngIf="!image" class="no-image">person</mat-icon>

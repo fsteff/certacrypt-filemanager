@@ -13,6 +13,9 @@ import { MatDividerModule } from '@angular/material/divider'
 import { MatGridListModule } from '@angular/material/grid-list'
 import { MatDialogModule } from '@angular/material/dialog'
 import { MatInputModule } from '@angular/material/input'
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatChipsModule } from '@angular/material/chips'; 
+import {MatList, MatListModule} from '@angular/material/list';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -23,6 +26,7 @@ import { ToolbarComponent } from './toolbar/toolbar.component';
 import { ShareDialogComponent } from './share-dialog/share-dialog.component';
 import { ProfileDialogComponent } from './profile-dialog/profile-dialog.component';
 import { ProfileImageComponent } from './profile-image/profile-image.component';
+import { ContactsDialogComponent } from './contacts-dialog/contacts-dialog.component';
 
 @NgModule({
   declarations: [
@@ -33,7 +37,8 @@ import { ProfileImageComponent } from './profile-image/profile-image.component';
     ToolbarComponent,
     ShareDialogComponent,
     ProfileDialogComponent,
-    ProfileImageComponent
+    ProfileImageComponent,
+    ContactsDialogComponent
   ],
   imports: [
     BrowserModule,
@@ -50,7 +55,10 @@ import { ProfileImageComponent } from './profile-image/profile-image.component';
     MatDividerModule,
     MatGridListModule,
     MatDialogModule,
-    MatInputModule
+    MatInputModule,
+    MatSnackBarModule,
+    MatChipsModule,
+    MatListModule
   ],
   providers: [],
   bootstrap: [AppComponent]

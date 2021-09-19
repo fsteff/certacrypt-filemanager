@@ -46,6 +46,7 @@ export interface IContactsEventHandler {
     addFriend(url: string): Promise<void>
 
     readProfileImage(url: string): Promise<string> 
+    getUserByUrl(url: string): Promise<Contact>
 }
 
 export interface IDriveEventHandler {

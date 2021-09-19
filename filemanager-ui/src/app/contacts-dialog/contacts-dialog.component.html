@@ -1,0 +1,33 @@
+<div mat-dialog-content>
+    <h1>Contacts</h1>
+    <div>
+        <mat-form-field>
+            <mat-label>Add contacts</mat-label>
+            <input mat-input #friendUrlInput (change)="onFriendInput($event)" placeholder="Paste a friend's user URL here">
+        </mat-form-field>
+        <div #addedContacts>
+            <mat-list>
+                <mat-list-item *ngFor="let friend of addedFriends"><app-profile-image [profile]="friend"></app-profile-image><span>{{friend.username}}</span></mat-list-item>
+            </mat-list>
+        </div>
+    </div>
+
+    <mat-table [dataSource]="contactList" class="contacts-list">
+        <ng-container matColumnDef="image">
+            <td mat-cell *matCellDef="let element"><button mat-icon-button><app-profile-image [profile]="element"></app-profile-image></button></td>
+        </ng-container>
+        <ng-container matColumnDef="username">
+            <td mat-cell *matCellDef="let element">{{element.username}}</td>
+        </ng-container>
+        <ng-container matColumnDef="friendStatus">
+            <td mat-cell *matCellDef="let element">no friend info</td>
+        </ng-container>
+        <tr
+            mat-row
+            *matRowDef="let row; columns: ['image', 'username', 'friendStatus'];"
+        ></tr>
+    </mat-table>
+</div>
+<div mat-dialog-actions>
+    <button mat-stroked-button [mat-dialog-close] cdkFocusInitial>Close</button>
+</div>

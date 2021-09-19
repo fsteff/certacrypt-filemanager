@@ -1,5 +1,6 @@
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Component, Inject, OnInit } from '@angular/core';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { Contact } from '../../../../src/EventInterfaces';
 import { ContactService } from '../contact.service';
 import { DriveService } from '../drive.service';
@@ -24,6 +25,7 @@ export class ProfileDialogComponent implements OnInit {
   constructor(private contacts: ContactService, 
               private drive: DriveService,
               private dialogRef: MatDialogRef<ProfileDialogComponent>,
+              private snackBarRef: MatSnackBar,
               @Inject(MAT_DIALOG_DATA) public params: ProfileDialogParameters) 
   {
     this.profile = params.profile
@@ -58,5 +60,10 @@ export class ProfileDialogComponent implements OnInit {
     this.contacts.readProfileImage(share).then(dataUri => {
       this.image = dataUri
     })
+  }
+
+  onCopyUrl(){
+    navigator.clipboard.writeText(this.profile.publicUrl)
+    this.snackBarRef.open('Profile URL copied to clipboard!', 'dismiss', {duration: 2000})
   }
 }

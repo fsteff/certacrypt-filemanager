@@ -1,0 +1,15 @@
+table, .contacts-list{
+    width: 100%;
+}
+
+.contacts-list td {
+   padding-right: 1em; 
+   vertical-align: middle;
+}
+
+.contacts-list .mat-column-username {
+    width: 70%;
+}
+.contacts-list .mat-column-friendStatus {
+    width: 30%;
+}

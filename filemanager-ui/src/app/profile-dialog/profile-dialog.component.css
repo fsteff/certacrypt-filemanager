@@ -25,3 +25,13 @@
     margin-left: calc(50% - 8em);
     width: 16em;
 }
+
+.public-url{
+    float: right;
+    top: 1em;
+    right: 1em;
+}
+
+.public-url span {
+    vertical-align: middle;
+}
