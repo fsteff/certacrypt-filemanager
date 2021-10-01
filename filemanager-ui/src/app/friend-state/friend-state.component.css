@@ -1,0 +1,8 @@
+.friend-state span,
+.friend-state mat-icon {
+    vertical-align: middle;
+}
+
+.friend-state button {
+    width: 7em;
+}

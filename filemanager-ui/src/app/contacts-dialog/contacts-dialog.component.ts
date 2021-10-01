@@ -14,10 +14,8 @@ export class ContactsDialogComponent implements OnInit {
 
   constructor(private contacts: ContactService) { }
 
-  ngOnInit(): void {
-    Promise.all([this.contacts.getAllContacts(), this.contacts.getProfile()]).then(([list, me]) => {
-      this.contactList = [me].concat(list)
-    })
+  async ngOnInit(): Promise<void> {
+    this.contactList = await this.contacts.getAllContacts()
   }
 
   async onFriendInput(event: Event) {
@@ -32,5 +30,3 @@ export class ContactsDialogComponent implements OnInit {
     }
   }
 }
-
-// hyper://7db4706d943bc99bac986ccaa5d3b513c12b1a787a981340a6fee35eef9ca54a/7?key=eb21630535af73605a34813ce8979b1b5b9f2ded2cb498fc9f406abb498d40ac&type=user

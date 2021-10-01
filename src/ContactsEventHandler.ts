@@ -1,4 +1,4 @@
-import { CertaCrypt, GraphObjects, User } from "certacrypt";
+import { CertaCrypt, GraphObjects, User, FriendState } from "certacrypt";
 import { IpcMain, dialog } from "electron";
 import { Vertex } from "hyper-graphdb";
 import { Contact, IContactsEventHandler, Profile } from "./EventInterfaces";
@@ -35,6 +35,11 @@ export default class ContactsEventHandler extends MainEventHandler implements IC
     async addFriend(url: string): Promise<void> {
         const user = await this.certacrypt.getUserByUrl(url)
         return (await this.certacrypt.contacts).addFriend(user)
+    }
+
+    async getFriendState(url: string): Promise<FriendState> {
+        const user = await this.certacrypt.getUserByUrl(url)
+        return (await this.certacrypt.contacts).getFriendState(user)
     }
 
     async readProfileImage(url: string): Promise<string> {

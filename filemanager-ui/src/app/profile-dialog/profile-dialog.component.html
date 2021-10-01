@@ -1,6 +1,7 @@
 <div mat-dialog-content>
     <div class="public-url">
         <button mat-stroked-button (click)="onCopyUrl()" matTooltip="Copy profile URL to clipborad"><mat-icon>link</mat-icon><span>Share</span></button>
+        <app-friend-state *ngIf="!writeable" [publicUrl]="profile.publicUrl"></app-friend-state>
     </div>
 
     <div class="image-circle" [ngStyle]="{backgroundImage: image}">
@@ -8,24 +9,24 @@
     </div>
     <button mat-stroked-button *ngIf="writeable" (click)="onUploadImage()" class="upload-button">Choose an Image</button>
     <mat-divider></mat-divider>
-    <p *ngIf="writeable">
+    <div *ngIf="writeable">
+        <p>
         <mat-form-field appearance="outline" class="centered">
             <mat-label>Nickname</mat-label>
             <input matInput #usernameInput [(ngModel)]="profile.username">
         </mat-form-field>
-    </p>
-    <p *ngIf="!writeable">
-        <textarea class="centered" cdkTextareaAutosize="false" disabled>{{profile?.username}}</textarea>
-    </p>
-    <p *ngIf="writeable">
-        <mat-form-field appearance="outline" class="centered">
-            <mat-label>About Me</mat-label>
-            <textarea matInput [(ngModel)]="profile.bio"></textarea>
-        </mat-form-field>
-    </p>
-    <p *ngIf="!writeable">
-        <textarea class="centered" cdkTextareaAutosize="false" disabled>{{profile?.bio}}</textarea>
-    </p>
+        </p>
+        <p>
+            <mat-form-field appearance="outline" class="centered">
+                <mat-label>About Me</mat-label>
+                <textarea matInput [(ngModel)]="profile.bio"></textarea>
+            </mat-form-field>
+        </p>
+    </div>
+    <div *ngIf="!writeable">
+        <h2>{{profile?.username}}</h2>
+        <p>{{profile?.bio}}</p>
+    </div>
 </div>
 <div mat-dialog-actions>
     <button mat-stroked-button *ngIf="!writeable" (click)="close()"  cdkFocusInitial>Close</button>

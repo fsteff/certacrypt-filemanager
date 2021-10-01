@@ -35,3 +35,7 @@
 .public-url span {
     vertical-align: middle;
 }
+
+.public-url button {
+    width: 7em;
+}

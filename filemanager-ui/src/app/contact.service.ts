@@ -33,4 +33,8 @@ export class ContactService {
   getUserByUrl(url: string) {
     return globals.contacts.getUserByUrl(url)
   }
+
+  getFriendState(url: string) {
+    return globals.contacts.getFriendState(url)
+  }
 }

@@ -15,13 +15,18 @@ export class ProfileImageComponent implements OnInit {
   @Input()
   profile: Contact
 
+  @Input()
+  writeable = false
+
   backgroundImage: string
+  
 
   constructor(private contacts: ContactService, private dialog: MatDialog) { }
 
   async ngOnInit() {
     if(!this.profile) {
       this.profile = await this.contacts.getProfile()
+      this.writeable = true
     }
 
     if(this.profile?.profilePicture) {
@@ -35,7 +40,7 @@ export class ProfileImageComponent implements OnInit {
   }
 
   onClick() {
-    const dialogRef = this.dialog.open(ProfileDialogComponent, {width: '80%', maxWidth: '32em', data: {profile: this.profile, writeable: true, image: this.backgroundImage}})
+    const dialogRef = this.dialog.open(ProfileDialogComponent, {width: '80%', maxWidth: '32em', data: {profile: this.profile, writeable: this.writeable, image: this.backgroundImage}})
     dialogRef.afterClosed().subscribe(() => {
       this.contacts.readProfileImage(this.profile.profilePicture).then(dataUri => {
         this.backgroundImage = dataUri

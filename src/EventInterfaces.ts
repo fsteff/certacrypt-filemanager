@@ -1,4 +1,4 @@
-import { ContactProfile, GraphObjects } from 'certacrypt'
+import { ContactProfile, FriendState, GraphObjects } from 'certacrypt'
 import { GraphObject } from 'hyper-graphdb';
 
 export type Fd = number
@@ -47,6 +47,7 @@ export interface IContactsEventHandler {
 
     readProfileImage(url: string): Promise<string> 
     getUserByUrl(url: string): Promise<Contact>
+    getFriendState(url: string): Promise<FriendState>
 }
 
 export interface IDriveEventHandler {

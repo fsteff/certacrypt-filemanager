@@ -27,6 +27,8 @@ import { ShareDialogComponent } from './share-dialog/share-dialog.component';
 import { ProfileDialogComponent } from './profile-dialog/profile-dialog.component';
 import { ProfileImageComponent } from './profile-image/profile-image.component';
 import { ContactsDialogComponent } from './contacts-dialog/contacts-dialog.component';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { FriendStateComponent } from './friend-state/friend-state.component';
 
 @NgModule({
   declarations: [
@@ -38,7 +40,8 @@ import { ContactsDialogComponent } from './contacts-dialog/contacts-dialog.compo
     ShareDialogComponent,
     ProfileDialogComponent,
     ProfileImageComponent,
-    ContactsDialogComponent
+    ContactsDialogComponent,
+    FriendStateComponent
   ],
   imports: [
     BrowserModule,
@@ -58,7 +61,8 @@ import { ContactsDialogComponent } from './contacts-dialog/contacts-dialog.compo
     MatInputModule,
     MatSnackBarModule,
     MatChipsModule,
-    MatListModule
+    MatListModule,
+    MatFormFieldModule
   ],
   providers: [],
   bootstrap: [AppComponent]

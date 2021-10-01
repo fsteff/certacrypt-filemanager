@@ -1,0 +1,9 @@
+<div class="friend-state">
+    <button mat-stroked-button color="primary" (click)="onClick()">
+        <div *ngIf="!friendState"><mat-icon>downloading</mat-icon></div>
+        <div *ngIf="friendState === 'friends'"><mat-icon>people</mat-icon><span>Friend</span></div>
+        <div *ngIf="friendState === 'received'"><mat-icon>person_add_alt</mat-icon><span>Accept</span></div>
+        <div *ngIf="friendState === 'sent'"><mat-icon>forward</mat-icon><span>Sent</span></div>
+        <div *ngIf="friendState === 'none'"><mat-icon>person_add_alt</mat-icon><span>Add</span></div>
+    </button>
+</div>
