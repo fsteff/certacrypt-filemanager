@@ -9,6 +9,7 @@ import { DefaultCrypto } from 'certacrypt-crypto'
 import DriveEventHandler from './DriveEventHandler'
 import ContactsEventHandler from './ContactsEventHandler'
 import { Feed } from 'hyperobjects';
+import { PubSub } from './pubsub';
 
 app.on('ready', startServer)
 
@@ -85,6 +86,7 @@ async function startServer() {
     }
     await DriveEventHandler.init(ipcMain, certacrypt, client)
     await ContactsEventHandler.init(ipcMain, certacrypt)
+    const pubsub = new PubSub(client, certacrypt)
 
     console.log(await certacrypt.debugDrawGraph())
 

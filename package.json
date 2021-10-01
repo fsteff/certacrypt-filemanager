@@ -37,6 +37,7 @@
     "certacrypt-graph": "git+https://github.com/fsteff/certacrypt-graph.git",
     "hyper-graphdb": "git+https://github.com/fsteff/hyper-graphdb.git",
     "hyperobjects": "git+https://github.com/fsteff/hyperobjects.git",
+    "hyperpubsub": "^1.2.3",
     "hyperspace": "^3.19.0",
     "is-loopback-addr": "^1.0.1",
     "unixify": "^1.0.0"
