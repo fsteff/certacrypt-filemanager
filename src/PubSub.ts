@@ -2,6 +2,7 @@ import { CertaCrypt, FriendState } from 'certacrypt'
 import { debug as HyperPubSubDebug, PubSub as HyperPubSub } from 'hyperpubsub'
 import { Client } from 'hyperspace'
 
+const CACHE_PATH = 'certacrypt-filemanager/pubsub/received'
 
 export class PubSub {
     readonly pubsub: HyperPubSub
@@ -14,7 +15,7 @@ export class PubSub {
 
     async init() {
         const user = await this.certacrypt.user
-        this.pubsub.subPrivateMsg(await user.getPublicKey(), user.getSecretKey(), (msg, app, peer) => this.onMessage(msg, app, peer))
+        this.pubsub.subPrivateMsg(await user.getPublicKey(), user.getSecretKey(), (msg, app, peer) => this.onMessage(msg, app, peer).catch(console.error))
 
         const contacts = await this.certacrypt.contacts
         const friends = await contacts.getFriends()
@@ -38,7 +39,23 @@ export class PubSub {
         }
     }
 
-    onMessage(msg: Buffer, app: string, peer: {}) {
-        console.log('received PubSub Friend URL: ' + msg.toString('utf-8'))
+    async onMessage(msg: Buffer, app: string, peer: {}) {
+        const url = msg.toString('utf-8')
+        console.log('received PubSub Friend URL: ' + url)
+        
+        const observed = await this.getReceivedUserUrls()
+        if(observed.indexOf(url) < 0) {
+            observed.push(url)
+            const cache = await this.certacrypt.cacheDb
+            await cache.put(CACHE_PATH, observed)
+        }
     }
+
+    async getReceivedUserUrls() {
+        const cache = await this.certacrypt.cacheDb
+        const observed = (await cache.get<string[]>(CACHE_PATH)) || []
+        return observed
+    }
+
+
 }

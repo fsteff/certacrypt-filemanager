@@ -1,22 +1,47 @@
+import os from 'os'
 import { CertaCrypt, GraphObjects, User, FriendState } from "certacrypt";
 import { IpcMain, dialog } from "electron";
 import { Vertex } from "hyper-graphdb";
 import { Contact, IContactsEventHandler, Profile } from "./EventInterfaces";
 import { MainEventHandler } from "./MainEventHandler";
+import { PubSub } from "./pubsub";
 
 export default class ContactsEventHandler extends MainEventHandler implements IContactsEventHandler {
-    constructor(app: IpcMain, readonly certacrypt: CertaCrypt) {
+    constructor(app: IpcMain, readonly certacrypt: CertaCrypt, readonly pubsub: PubSub) {
         super(app, 'contacts')
     }
 
-    static async init(app: IpcMain, certacrypt: CertaCrypt) {
+    static async init(app: IpcMain, certacrypt: CertaCrypt, pubsub: PubSub) {
         await certacrypt.contacts
-        return new ContactsEventHandler(app, certacrypt)
+
+        const user = await certacrypt.user
+        const profile = await user.getProfile() || new GraphObjects.UserProfile()
+        if(! profile?.username) {
+            profile.username = os.userInfo().username
+            await user.setProfile(profile)
+        }
+
+        return new ContactsEventHandler(app, certacrypt, pubsub)
     }
 
     async getAllContacts(): Promise<Contact[]> {
         return (await this.certacrypt.contacts).getAllContacts()
     }
+
+    async getReceivedFriendRequests() :Promise<Contact[]> {
+        const urls = await this.pubsub.getReceivedUserUrls()
+        const profiles = new Array<Contact>()
+        for(const url of urls) {
+            try {
+                const profile = await this.getProfile(url)
+                profiles.push(profile)
+            } catch (err) {
+                console.error('failed to load profile: ' + err)
+            }
+        }
+        return profiles
+    }
+
     async getProfile(url?: string): Promise<Contact> {
         if(url) {
             const user = await this.certacrypt.getUserByUrl(url)

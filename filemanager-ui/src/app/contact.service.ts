@@ -37,4 +37,8 @@ export class ContactService {
   getFriendState(url: string) {
     return globals.contacts.getFriendState(url)
   }
+
+  getReceivedFriendRequests() {
+    return globals.contacts.getReceivedFriendRequests()
+  }
 }

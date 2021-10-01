@@ -84,9 +84,9 @@ async function startServer() {
         const json = JSON.stringify(config)
         await fs.writeFile(configFile, json, 'utf-8')
     }
-    await DriveEventHandler.init(ipcMain, certacrypt, client)
-    await ContactsEventHandler.init(ipcMain, certacrypt)
     const pubsub = new PubSub(client, certacrypt)
+    await DriveEventHandler.init(ipcMain, certacrypt, client)
+    await ContactsEventHandler.init(ipcMain, certacrypt, pubsub) 
 
     console.log(await certacrypt.debugDrawGraph())
 

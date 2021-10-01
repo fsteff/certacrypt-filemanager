@@ -6,12 +6,8 @@
                 <mat-label>Add contacts</mat-label>
                 <input matInput #friendUrlInput (change)="onFriendInput($event)" placeholder="Paste a friend's user URL here">
             </mat-form-field>
-            <div #addedContacts>
-                <mat-list>
-                    <mat-list-item *ngFor="let friend of addedFriends"><app-profile-image [profile]="friend"></app-profile-image><span>{{friend.username}}</span></mat-list-item>
-                </mat-list>
-            </div>
         </form>
+        <mat-spinner #loadingSpinner color="primary" diameter="30" mode="indeterminate" *ngIf="isLoading"></mat-spinner>
     </div>
 
     <mat-table [dataSource]="contactList" class="contacts-list">

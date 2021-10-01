@@ -16,6 +16,8 @@ import { MatInputModule } from '@angular/material/input'
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatChipsModule } from '@angular/material/chips'; 
 import {MatList, MatListModule} from '@angular/material/list';
+import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
+import { MatFormFieldModule } from '@angular/material/form-field';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -27,7 +29,6 @@ import { ShareDialogComponent } from './share-dialog/share-dialog.component';
 import { ProfileDialogComponent } from './profile-dialog/profile-dialog.component';
 import { ProfileImageComponent } from './profile-image/profile-image.component';
 import { ContactsDialogComponent } from './contacts-dialog/contacts-dialog.component';
-import { MatFormFieldModule } from '@angular/material/form-field';
 import { FriendStateComponent } from './friend-state/friend-state.component';
 
 @NgModule({
@@ -62,7 +63,8 @@ import { FriendStateComponent } from './friend-state/friend-state.component';
     MatSnackBarModule,
     MatChipsModule,
     MatListModule,
-    MatFormFieldModule
+    MatFormFieldModule,
+    MatProgressSpinnerModule
   ],
   providers: [],
   bootstrap: [AppComponent]

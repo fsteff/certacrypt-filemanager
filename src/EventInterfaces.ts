@@ -39,6 +39,7 @@ export interface ICertaCryptEventHandler {
 
 export interface IContactsEventHandler {
     getAllContacts(): Promise<Contact[]>
+    getReceivedFriendRequests() :Promise<Contact[]>
     
     getProfile(url?: string): Promise<Contact>
     setProfile(profile: Profile): Promise<void>
