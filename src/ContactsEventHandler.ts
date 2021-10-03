@@ -68,14 +68,10 @@ export default class ContactsEventHandler extends MainEventHandler implements IC
     }
 
     async readProfileImage(url: string): Promise<string> {
-        const drive = await this.certacrypt.drive(url)
-        const files = await drive.promises.readdir('/', {db: {encrypted: true}})
-        if(files.length !== 1) {
-            throw new Error('expected exactly one file from url ' + url + ' but got: ' + files)
-        }
-        const filename = <string> files[0]
-        const mime = getImageMime(filename)
-        const data = await drive.promises.readFile(filename, {db: {encrypted: true}, encoding: 'base64'})
+        const {name, readFile} = await this.certacrypt.getFileByUrl(url)
+        const data = await readFile({db: {encrypted: true}, encoding: 'base64'})
+        const mime = getImageMime(name)
+
         return 'url(data:' + mime + ';base64,' + data + ')'
     }
 

@@ -19,7 +19,7 @@ export class ShareDialogComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA) public fileData: FileData) { }
 
   async ngOnInit(): Promise<void> {
-    this.url = await this.drive.shareFile(this.fileData.path)
+    this.url = await this.drive.createShare(this.fileData.path)
   }
 
   onCopy() {

@@ -54,10 +54,10 @@ export class ProfileDialogComponent implements OnInit {
     const upload = await this.drive.uploadFile('/.public/', false)
     if(!upload || upload.length === 0) return
 
-    const share = await this.drive.shareFile(upload[0])
-    this.profile.profilePicture = share
+    const url = await this.drive.getFileUrl(upload[0])
+    this.profile.profilePicture = url
 
-    this.contacts.readProfileImage(share).then(dataUri => {
+    this.contacts.readProfileImage(url).then(dataUri => {
       this.image = dataUri
     })
   }

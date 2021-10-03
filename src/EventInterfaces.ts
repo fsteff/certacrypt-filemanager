@@ -65,8 +65,9 @@ export interface IDriveEventHandler {
 
     uploadFile(path: string, multiple: boolean): Promise<string[]>
 
-    shareFile(path: string): Promise<string>
+    createShare(path: string): Promise<string>
     mountShare(url: string, path: string): Promise<string>
 
     lookupPeers(url: string): Promise<Peer>
+    getFileUrl(path: string): Promise<string>
 }

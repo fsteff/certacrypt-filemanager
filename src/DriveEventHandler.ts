@@ -103,9 +103,9 @@ export default class DriveEventHandler extends MainEventHandler implements IDriv
         return uploads.map(u => u.target)
     }
 
-    async shareFile(path: string): Promise<string> {
+    async createShare(path: string): Promise<string> {
         const file = await this.certacrypt.path('/apps/filemanager' + path)
-        const share = await this.certacrypt.share(file)
+        const share = await this.certacrypt.createShare(file)
         const key = this.certacrypt.graph.getKey(share)
         return createUrl(share, key)
     }
@@ -127,7 +127,13 @@ export default class DriveEventHandler extends MainEventHandler implements IDriv
             core.on('peer-add', (peer: Peer) => resolve(peer))
             core.on('error', (err: Error) => reject(err))
         })
-        
+    }
+
+    async getFileUrl(path: string): Promise<string> {
+        const file = await this.certacrypt.path('/apps/filemanager' + path)
+        const pathParts = path.split('/')
+        const filename = pathParts[pathParts.length-1]
+        return this.certacrypt.getFileUrl(file, filename) 
     }
 }
 

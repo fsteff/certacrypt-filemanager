@@ -70,8 +70,8 @@ export class DriveService {
     return globals.drive.uploadFile(path, multiple)
   }
 
-  async shareFile(path: string): Promise<string>{
-    return globals.drive.shareFile(path)
+  async createShare(path: string): Promise<string>{
+    return globals.drive.createShare(path)
   }
 
   async mountShare(url: string, path: string): Promise<string> {
@@ -79,5 +79,9 @@ export class DriveService {
     //const firstPeer = await globals.drive.lookupPeers(url)
     //console.log('first peer: ' + firstPeer)
     return globals.drive.mountShare(url, path)
+  }
+
+  async getFileUrl(path: string): Promise<string> {
+    return globals.drive.getFileUrl(path)
   }
 }
