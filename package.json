@@ -26,7 +26,7 @@
   },
   "homepage": "https://github.com/fsteff/certacrypt-filemanager#readme",
   "devDependencies": {
-    "electron": "^12.1.1",
+    "electron": "^12.2.2",
     "electron-packager": "^15.4.0"
   },
   "dependencies": {
@@ -38,7 +38,7 @@
     "hyper-graphdb": "git+https://github.com/fsteff/hyper-graphdb.git",
     "hyperobjects": "git+https://github.com/fsteff/hyperobjects.git",
     "hyperpubsub": "^1.2.3",
-    "hyperspace": "^3.19.0",
+    "hyperspace": "git+https://github.com/fsteff/hyperspace.git",
     "is-loopback-addr": "^1.0.1",
     "unixify": "^1.0.0"
   }
