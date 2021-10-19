@@ -1,12 +1,67 @@
 <h1>Share</h1>
 <div mat-dialog-content>
-    <p>
-        <input mat-input value={{url}}  #urlInput>
-        <button mat-flat-button color="primary" (click)="onCopy()">Copy to Clipboard</button>
-    </p>
-    
-    <mat-icon color="primary">info</mat-icon>
-    <p>Anyone with that link can read the shared data. The encryption key used to secure your data is contained in the url.</p>
+    <mat-accordion>
+        <mat-expansion-panel [expanded]="true">
+            <mat-expansion-panel-header>
+                <mat-panel-title>Share with your contacts</mat-panel-title>
+            </mat-expansion-panel-header>
+            <div *ngIf="sharedWith?.length > 0">
+                Selected contacts
+               <table mat-table [dataSource]="sharedWith" class="contacts-list">
+                <ng-container matColumnDef="icon">
+                    <th mat-header-cell *matHeaderCellDef></th>
+                    <td mat-cell *matCellDef="let user">
+                        <app-profile-image [profile]="user"></app-profile-image>
+                    </td>
+                </ng-container>
+                <ng-container matColumnDef="name">
+                    <th mat-header-cell *matHeaderCellDef>Name</th>
+                    <td mat-cell *matCellDef="let user">{{user.username}}</td>
+                </ng-container>
+                <ng-container matColumnDef="reserved">
+                    <th mat-header-cell *matHeaderCellDef></th>
+                    <td mat-cell *matCellDef="let user"></td>
+                </ng-container>
+                <tr mat-row *matRowDef="let row; columns: ['icon', 'name'];"></tr>
+            </table>
+            </div>
+            <i *ngIf="sharedWith?.length === 0">no contacts selected</i>
+
+            <mat-divider></mat-divider>
+            Select from your contacts:
+            <table mat-table [dataSource]="allContacts"  class="contacts-list">
+                <ng-container matColumnDef="icon">
+                    <th mat-header-cell *matHeaderCellDef></th>
+                    <td mat-cell *matCellDef="let user">
+                        <app-profile-image [profile]="user"></app-profile-image>
+                    </td>
+                </ng-container>
+                <ng-container matColumnDef="name">
+                    <th mat-header-cell *matHeaderCellDef>Name</th>
+                    <td mat-cell *matCellDef="let user">{{user.username}}</td>
+                </ng-container>
+                <ng-container matColumnDef="add">
+                    <th mat-header-cell *matHeaderCellDef></th>
+                    <td mat-cell *matCellDef="let user"><button mat-icon-button (click)="onAdd(user)"><mat-icon>add_circle_outline</mat-icon></button></td>
+                </ng-container>
+                <tr mat-row *matRowDef="let row; columns: ['icon', 'name', 'add'];"></tr>
+            </table>
+        </mat-expansion-panel>
+        
+        <mat-expansion-panel>
+            <mat-expansion-panel-header>
+                <mat-panel-title>Share by sending a link</mat-panel-title>
+            </mat-expansion-panel-header>
+            <p>
+                <input mat-input value={{url}} #urlInput>
+                <button mat-flat-button color="primary" (click)="onCopy()">Copy to Clipboard</button>
+            </p>
+
+            <mat-icon color="primary">info</mat-icon>
+            <p>Anyone with that link can read the shared data. The encryption key used to secure your data is contained
+                in the url.</p>
+        </mat-expansion-panel>
+    </mat-accordion>
 </div>
 <div mat-dialog-actions>
     <button mat-stroked-button [mat-dialog-close]="url">Close</button>

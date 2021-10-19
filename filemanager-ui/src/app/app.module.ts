@@ -14,10 +14,10 @@ import { MatGridListModule } from '@angular/material/grid-list'
 import { MatDialogModule } from '@angular/material/dialog'
 import { MatInputModule } from '@angular/material/input'
 import { MatSnackBarModule } from '@angular/material/snack-bar';
-import { MatChipsModule } from '@angular/material/chips'; 
-import {MatList, MatListModule} from '@angular/material/list';
+import { MatListModule} from '@angular/material/list';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import {MatExpansionModule} from '@angular/material/expansion'; 
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -61,10 +61,10 @@ import { FriendStateComponent } from './friend-state/friend-state.component';
     MatDialogModule,
     MatInputModule,
     MatSnackBarModule,
-    MatChipsModule,
     MatListModule,
     MatFormFieldModule,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
+    MatExpansionModule,
   ],
   providers: [],
   bootstrap: [AppComponent]

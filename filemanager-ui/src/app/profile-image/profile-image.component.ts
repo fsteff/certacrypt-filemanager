@@ -41,10 +41,15 @@ export class ProfileImageComponent implements OnInit {
 
   onClick() {
     const dialogRef = this.dialog.open(ProfileDialogComponent, {width: '80%', maxWidth: '32em', data: {profile: this.profile, writeable: this.writeable, image: this.backgroundImage}})
-    dialogRef.afterClosed().subscribe(() => {
-      this.contacts.readProfileImage(this.profile.profilePicture).then(dataUri => {
-        this.backgroundImage = dataUri
-      })
+    dialogRef.afterClosed().subscribe(async () => {
+      if(this.writeable) {
+        this.profile = await this.contacts.getProfile(this.profile.publicUrl)
+        if(this.profile?.profilePicture) {
+          this.contacts.readProfileImage(this.profile.profilePicture).then(dataUri => {
+            this.backgroundImage = dataUri
+          })
+        }
+      }
     })
   }
 
