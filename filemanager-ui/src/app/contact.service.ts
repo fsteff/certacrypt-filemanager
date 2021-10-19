@@ -41,4 +41,8 @@ export class ContactService {
   getReceivedFriendRequests() {
     return globals.contacts.getReceivedFriendRequests()
   }
+
+  sendShare(user: string, url: string) {
+    return globals.contacts.sendShare([user], url)
+  }
 }

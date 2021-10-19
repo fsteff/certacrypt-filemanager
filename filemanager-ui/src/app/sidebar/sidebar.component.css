@@ -1,0 +1,13 @@
+.sidebar {
+    width: 3em;
+    height: 100%;   
+}
+
+.profilebutton {
+    padding-left: calc(1.5em - 15px);
+}
+
+.sidebar .mat-toolbar-row {
+    padding: 0em 0.5em;
+    height: 3em;
+}

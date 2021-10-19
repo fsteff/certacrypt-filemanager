@@ -1,5 +1,6 @@
 import os from 'os'
-import { CertaCrypt, GraphObjects, User, FriendState } from "certacrypt";
+import { CertaCrypt, GraphObjects, User, FriendState, parseUrl } from "certacrypt";
+import { ShareGraphObject } from 'certacrypt-graph';
 import { IpcMain, dialog } from "electron";
 import { Vertex } from "hyper-graphdb";
 import { Contact, IContactsEventHandler, Profile } from "./EventInterfaces";
@@ -79,6 +80,13 @@ export default class ContactsEventHandler extends MainEventHandler implements IC
         const user = await this.certacrypt.getUserByUrl(url)
         const profile: Contact = {...await user.getProfile(), publicUrl: url}
         return profile
+    }
+
+    async sendShare(userUrls: string[], url: string) {
+        const parsed = parseUrl(url)
+        const vertex = <Vertex<ShareGraphObject>> await this.certacrypt.graph.get(parsed.id, parsed.feed, parsed.key)
+        const users = await Promise.all(userUrls.map(u => this.certacrypt.getUserByUrl(u)))
+        await this.certacrypt.sendShare(vertex, users)
     }
 }
 

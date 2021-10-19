@@ -1,0 +1,14 @@
+<mat-toolbar #sidebar class="sidebar" color="primary">
+    <mat-toolbar-row>
+        <button mat-icon-button class="profilebutton"><app-profile-image></app-profile-image></button>
+    </mat-toolbar-row>
+    <mat-toolbar-row>
+        <button mat-icon-button (click)="onAddressBook()"><mat-icon>contacts</mat-icon></button>
+    </mat-toolbar-row>
+    <mat-toolbar-row>
+        <a routerLink="/explorer/%2f"><button mat-icon-button><mat-icon>storage</mat-icon></button></a>
+    </mat-toolbar-row>
+    <mat-toolbar-row>
+        <a routerLink="/explorer/shares/%2f"><button mat-icon-button><mat-icon>folder_shared</mat-icon></button></a>
+    </mat-toolbar-row>
+</mat-toolbar>

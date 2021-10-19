@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core'
 import globals from '../../../src/globals'
 import { Observable, from } from 'rxjs'
-import { readdirResult, FileDownload, Stat } from '../../../src/EventInterfaces'
+import { readdirResult, FileDownload, Stat, Share } from '../../../src/EventInterfaces'
 import { ActivatedRoute } from '@angular/router'
 
 @Injectable({
@@ -83,5 +83,9 @@ export class DriveService {
 
   async getFileUrl(path: string): Promise<string> {
     return globals.drive.getFileUrl(path)
+  }
+
+  async getAllReceivedShares() : Promise<Share[]> {
+    return globals.drive.getAllReceivedShares()
   }
 }

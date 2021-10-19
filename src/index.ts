@@ -3,13 +3,14 @@ import { app, BrowserWindow, ipcMain, protocol } from 'electron'
 import { promises as fs } from 'fs'
 import Main from './Main';
 
-import { CertaCrypt, GraphObjects, enableDebugLogging } from 'certacrypt'
+import { CertaCrypt, GraphObjects, enableDebugLogging, DriveShare } from 'certacrypt'
 import { DefaultCrypto } from 'certacrypt-crypto'
 
 import DriveEventHandler from './DriveEventHandler'
 import ContactsEventHandler from './ContactsEventHandler'
 import { Feed } from 'hyperobjects';
 import { PubSub } from './pubsub';
+import { GraphObject, SimpleGraphObject } from 'hyper-graphdb';
 
 app.on('ready', startServer)
 
@@ -84,6 +85,7 @@ async function startServer() {
         const json = JSON.stringify(config)
         await fs.writeFile(configFile, json, 'utf-8')
     }
+
     const pubsub = new PubSub(client, certacrypt)
     await DriveEventHandler.init(ipcMain, certacrypt, client)
     await ContactsEventHandler.init(ipcMain, certacrypt, pubsub) 

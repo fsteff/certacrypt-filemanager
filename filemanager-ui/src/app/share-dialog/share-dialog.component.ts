@@ -36,7 +36,8 @@ export class ShareDialogComponent implements OnInit {
     document.execCommand('copy')
   }
 
-  onAdd(user: Contact) {
+  async onAdd(user: Contact) {
+    this.contacts.sendShare(user.publicUrl, this.url)
     this.allContacts.splice(this.allContacts.indexOf(user), 1)
     this.sharedWith.push(user)
     this.sharedWith.sort((a,b) => a.username?.localeCompare(b.username))

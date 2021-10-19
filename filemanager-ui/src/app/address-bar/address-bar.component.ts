@@ -17,10 +17,12 @@ export class AddressBarComponent implements OnInit {
       const parts = route.split('/').filter(p => p.length > 0)
       let path = ''
       this.path = []
-      for (const part of parts) {
+      for (let part of parts) {
         path += '/' + part
         const link = '/explorer/' + window.encodeURIComponent(path)
-        this.path.push({name: part, link})
+        let name = window.decodeURIComponent(part)
+        if(name.length > 16) name = name.substr(0, 8) + '...'
+        this.path.push({name, link})
       }
     })
   }

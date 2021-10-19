@@ -18,6 +18,7 @@ import { MatListModule} from '@angular/material/list';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import {MatExpansionModule} from '@angular/material/expansion'; 
+import {MatSidenavModule} from '@angular/material/sidenav'; 
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -30,6 +31,8 @@ import { ProfileDialogComponent } from './profile-dialog/profile-dialog.componen
 import { ProfileImageComponent } from './profile-image/profile-image.component';
 import { ContactsDialogComponent } from './contacts-dialog/contacts-dialog.component';
 import { FriendStateComponent } from './friend-state/friend-state.component';
+import { SidebarComponent } from './sidebar/sidebar.component';
+import { ShareListComponent } from './share-list/share-list.component';
 
 @NgModule({
   declarations: [
@@ -42,7 +45,9 @@ import { FriendStateComponent } from './friend-state/friend-state.component';
     ProfileDialogComponent,
     ProfileImageComponent,
     ContactsDialogComponent,
-    FriendStateComponent
+    FriendStateComponent,
+    SidebarComponent,
+    ShareListComponent
   ],
   imports: [
     BrowserModule,
@@ -65,6 +70,7 @@ import { FriendStateComponent } from './friend-state/friend-state.component';
     MatFormFieldModule,
     MatProgressSpinnerModule,
     MatExpansionModule,
+    MatSidenavModule
   ],
   providers: [],
   bootstrap: [AppComponent]

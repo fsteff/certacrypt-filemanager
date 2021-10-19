@@ -1,4 +1,4 @@
-import { ContactProfile, FriendState, GraphObjects } from 'certacrypt'
+import { ContactProfile, FriendState, GraphObjects, CommShare } from 'certacrypt'
 import { GraphObject } from 'hyper-graphdb';
 
 export type Fd = number
@@ -27,6 +27,14 @@ export type RawGraphObject<T extends GraphObject> = Omit<{[Property in keyof T]:
 export type Contact = RawGraphObject<ContactProfile>
 export type Profile = RawGraphObject<GraphObjects.UserProfile>
 
+export type Share =  {
+    owner: string
+    info: string
+    name: string
+    sharedBy: string
+    share: string
+}
+
 export type Peer = {};
 
 export type FileDownload = {filename: string, size: number, downloaded: number, error?: Error, localPath?: string}
@@ -49,6 +57,7 @@ export interface IContactsEventHandler {
     readProfileImage(url: string): Promise<string> 
     getUserByUrl(url: string): Promise<Contact>
     getFriendState(url: string): Promise<FriendState>
+    sendShare(userUrls: string[], url: string): Promise<void>
 }
 
 export interface IDriveEventHandler {
@@ -70,4 +79,6 @@ export interface IDriveEventHandler {
 
     lookupPeers(url: string): Promise<Peer>
     getFileUrl(path: string): Promise<string>
+
+    getAllReceivedShares() : Promise<Share[]>
 }

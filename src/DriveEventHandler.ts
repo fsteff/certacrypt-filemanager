@@ -1,8 +1,8 @@
-import { CertaCrypt, GraphObjects, Hyperdrive, createUrl, parseUrl } from "certacrypt";
+import { CertaCrypt, GraphObjects, Hyperdrive, createUrl, parseUrl, URL_TYPES, DriveShare } from "certacrypt";
 import { IpcMain, dialog } from "electron";
 import fs from 'fs'
 import { MainEventHandler } from "./MainEventHandler";
-import { IDriveEventHandler, FileDownload , Stat, readdirResult, Peer} from "./EventInterfaces";
+import { IDriveEventHandler, FileDownload , Stat, readdirResult, Peer, Share} from "./EventInterfaces";
 import unixify from 'unixify'
 import { GraphObject, Vertex } from "hyper-graphdb";
 import Client from '@hyperspace/client'
@@ -15,8 +15,21 @@ export default class DriveEventHandler extends MainEventHandler implements IDriv
     }
 
     static async init(app: IpcMain, certacrypt: CertaCrypt, hyperspace: Client): Promise<DriveEventHandler> {
-        const rootVertex = <Vertex<GraphObjects.Directory>> await certacrypt.path('/apps/filemanager')
+        let rootVertex = <Vertex<GraphObjects.Directory>> await certacrypt.path('/apps/filemanager')
         const drive = await certacrypt.drive(rootVertex)
+
+        const shareEdge = rootVertex.getEdges('shares')
+        if(!shareEdge || shareEdge.length === 0) {
+            await drive.promises.mkdir('shares', {db:{encrypted: true}})
+            rootVertex = <Vertex<GraphObjects.Directory>> await certacrypt.graph.get(rootVertex.getId(), rootVertex.getFeed())
+            const edges = rootVertex.getEdges().map(edge => {
+                if(edge.label === 'shares') edge.view = DriveShare.DRIVE_SHARE_VIEW
+                return edge
+            })
+            rootVertex.setEdges(edges)
+            await certacrypt.graph.put(rootVertex)
+        }
+
         return new DriveEventHandler(app, drive, certacrypt, hyperspace)
     }
 
@@ -134,6 +147,14 @@ export default class DriveEventHandler extends MainEventHandler implements IDriv
         const pathParts = path.split('/')
         const filename = pathParts[pathParts.length-1]
         return this.certacrypt.getFileUrl(file, filename) 
+    }
+
+    async getAllReceivedShares() : Promise<Share[]>{
+        const shares = await (await this.certacrypt.contacts).getAllShares()
+        return shares.map(share => {
+            const url = createUrl(share.share, this.certacrypt.graph.getKey(share.share), undefined, URL_TYPES.SHARE, share.name)
+            return <Share> {share: url, name: share.name, info: share.info, sharedBy: share.sharedBy}
+        })
     }
 }
 

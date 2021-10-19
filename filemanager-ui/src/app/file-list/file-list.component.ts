@@ -62,8 +62,10 @@ export class FileListComponent implements OnInit, AfterViewInit {
 
       this.files.data = 
         files.map(r => {
+          let name = window.decodeURIComponent(r.name)
+          if(name.length > 64) name = name.substr(0, 32) + '...'
           return {
-            name: r.name,
+            name: name,
             path: r.path,
             isFile: r.stat?.isFile,
             icon: r.stat?.isDirectory ? 'folder' : 'description',

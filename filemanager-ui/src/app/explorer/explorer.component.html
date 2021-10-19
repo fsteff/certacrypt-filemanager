@@ -1,13 +1,20 @@
 
-<mat-toolbar color="primary">
-    <mat-toolbar-row>
-        <app-address-bar></app-address-bar>
-    </mat-toolbar-row>
-    <mat-divider></mat-divider>
-    <mat-toolbar-row>
-        <app-toolbar></app-toolbar>
-    </mat-toolbar-row>
-</mat-toolbar>
+<mat-sidenav-container style="height: 100%; width: 100%;">
+    <mat-sidenav mode="side" opened>
+        <app-sidebar></app-sidebar>
+    </mat-sidenav>
+    <mat-sidenav-content>
+        <mat-toolbar #topmenu color="primary">
+            <mat-toolbar-row>
+                <app-toolbar></app-toolbar>
+            </mat-toolbar-row>
+            <mat-divider></mat-divider>
+            <mat-toolbar-row>
+                <app-address-bar></app-address-bar>
+            </mat-toolbar-row>
+        </mat-toolbar>
+        <app-file-list></app-file-list>
+    </mat-sidenav-content>
+</mat-sidenav-container>
 
 
-<app-file-list></app-file-list>
