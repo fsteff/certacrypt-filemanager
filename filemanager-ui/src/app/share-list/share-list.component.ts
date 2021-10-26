@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { Share } from '../../../../src/EventInterfaces';
+import { ContactService } from '../contact.service';
 
 @Component({
   selector: 'app-share-list',
@@ -7,9 +9,16 @@ import { Component, OnInit } from '@angular/core';
 })
 export class ShareListComponent implements OnInit {
 
-  constructor() { }
+  sentShares: Share[]
+  receivedShares: Share[]
 
-  ngOnInit(): void {
+  constructor(private contacts: ContactService) { }
+
+  async ngOnInit() {
+    this.sentShares = await this.contacts.getAllSentShares()
+    console.log(this.sentShares)
+    this.receivedShares = await this.contacts.getAllReceivedShares() 
+    console.log(this.receivedShares)
   }
 
 }

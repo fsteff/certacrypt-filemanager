@@ -1,5 +1,6 @@
-import { Component, ContentChild, ElementRef, Inject, Input, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, Inject, OnInit, ViewChild } from '@angular/core';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatTable } from '@angular/material/table';
 
 
 import { Contact } from '../../../../src/EventInterfaces';
@@ -18,6 +19,8 @@ export class ShareDialogComponent implements OnInit {
   allContacts: Contact[] = []
 
   @ViewChild('urlInput') urlInput: ElementRef<HTMLInputElement>
+  @ViewChild('sharedWithTable') sharedWithTable: MatTable<Contact>
+  @ViewChild('allContactsTable') allContactsTable: MatTable<Contact>
 
   constructor(
     private drive: DriveService,
@@ -28,6 +31,7 @@ export class ShareDialogComponent implements OnInit {
     this.url = await this.drive.createShare(this.fileData.path)
     this.allContacts = await this.contacts.getAllContacts()
     this.allContacts.sort((a,b) => a.username?.localeCompare(b.username))
+    this.allContactsTable.renderRows()
   }
 
   onCopy() {
@@ -37,9 +41,11 @@ export class ShareDialogComponent implements OnInit {
   }
 
   async onAdd(user: Contact) {
-    this.contacts.sendShare(user.publicUrl, this.url)
+    await this.contacts.sendShare(user.publicUrl, this.url)
     this.allContacts.splice(this.allContacts.indexOf(user), 1)
     this.sharedWith.push(user)
     this.sharedWith.sort((a,b) => a.username?.localeCompare(b.username))
+    this.allContactsTable.renderRows()
+    this.sharedWithTable.renderRows()
   }
 }

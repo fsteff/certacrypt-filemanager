@@ -31,8 +31,10 @@ export type Share =  {
     owner: string
     info: string
     name: string
-    sharedBy: string
-    share: string
+    sharedBy: string,
+    sharedWith: string[],
+    shareUrl: string
+    drivePath: string
 }
 
 export type Peer = {};
@@ -58,6 +60,9 @@ export interface IContactsEventHandler {
     getUserByUrl(url: string): Promise<Contact>
     getFriendState(url: string): Promise<FriendState>
     sendShare(userUrls: string[], url: string): Promise<void>
+
+    getAllReceivedShares() : Promise<Share[]>
+    getAllSentShares(): Promise<Share[]>
 }
 
 export interface IDriveEventHandler {
@@ -79,6 +84,4 @@ export interface IDriveEventHandler {
 
     lookupPeers(url: string): Promise<Peer>
     getFileUrl(path: string): Promise<string>
-
-    getAllReceivedShares() : Promise<Share[]>
 }

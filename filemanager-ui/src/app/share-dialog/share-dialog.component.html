@@ -6,8 +6,8 @@
                 <mat-panel-title>Share with your contacts</mat-panel-title>
             </mat-expansion-panel-header>
             <div *ngIf="sharedWith?.length > 0">
-                Selected contacts
-               <table mat-table [dataSource]="sharedWith" class="contacts-list">
+                Contacts it is shared with:
+               <table mat-table #sharedWithTable [dataSource]="sharedWith" class="contacts-list">
                 <ng-container matColumnDef="icon">
                     <th mat-header-cell *matHeaderCellDef></th>
                     <td mat-cell *matCellDef="let user">
@@ -29,7 +29,7 @@
 
             <mat-divider></mat-divider>
             Select from your contacts:
-            <table mat-table [dataSource]="allContacts"  class="contacts-list">
+            <table mat-table #allContactsTable [dataSource]="allContacts"  class="contacts-list">
                 <ng-container matColumnDef="icon">
                     <th mat-header-cell *matHeaderCellDef></th>
                     <td mat-cell *matCellDef="let user">

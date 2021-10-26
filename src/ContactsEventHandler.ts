@@ -1,9 +1,9 @@
 import os from 'os'
-import { CertaCrypt, GraphObjects, User, FriendState, parseUrl } from "certacrypt";
+import { CertaCrypt, GraphObjects, User, FriendState, parseUrl, URL_TYPES, createUrl, CommShare } from "certacrypt";
 import { ShareGraphObject } from 'certacrypt-graph';
 import { IpcMain, dialog } from "electron";
-import { Vertex } from "hyper-graphdb";
-import { Contact, IContactsEventHandler, Profile } from "./EventInterfaces";
+import { Generator, GraphObject, GRAPH_VIEW, IVertex, Query, Vertex, VertexQueries } from "hyper-graphdb";
+import { Contact, IContactsEventHandler, Profile, Share } from "./EventInterfaces";
 import { MainEventHandler } from "./MainEventHandler";
 import { PubSub } from "./pubsub";
 
@@ -87,6 +87,52 @@ export default class ContactsEventHandler extends MainEventHandler implements IC
         const vertex = <Vertex<ShareGraphObject>> await this.certacrypt.graph.get(parsed.id, parsed.feed, parsed.key)
         const users = await Promise.all(userUrls.map(u => this.certacrypt.getUserByUrl(u)))
         await this.certacrypt.sendShare(vertex, users)
+    }
+
+    async getAllReceivedShares() : Promise<Share[]>{
+        const shares = await (await this.certacrypt.contacts).getAllReceivedShares()
+        return Promise.all(shares.map(share => this.convertToShare(share)))
+    }
+
+    async getAllSentShares() : Promise<Share[]>{
+        const shares = await (await this.certacrypt.contacts).getAllSentShares()
+        return Promise.all(shares.map(share => this.convertToShare(share)))
+    }
+
+    private async convertToShare(share: CommShare): Promise<Share> {
+        const shareUrl = createUrl(share.share, this.certacrypt.graph.getKey(share.share), undefined, URL_TYPES.SHARE, share.name)
+        const target = <Vertex<GraphObject>> share.target
+
+        const appRoot = await this.certacrypt.path('/apps/filemanager')
+        const view = this.certacrypt.graph.factory.get(GRAPH_VIEW)
+        const visited: IVertex<GraphObject>[] = []
+        const path = await traverse(view.query(Generator.from([appRoot])), [], 0)
+        const drivePath = path ? path.join('/') : undefined
+        
+        return <Share> {shareUrl, drivePath, name: share.name, info: share.info, owner: share.owner, sharedBy: share.sharedBy, sharedWith: share.sharedWith}
+
+        async function traverse(query: Query<GraphObject>, path: string[], depth: number): Promise<string[]|undefined> {
+            if(depth > 100) return
+
+            const vertices = await query.generator().destruct(err => 'failed to get vertex for path: ' + err)
+            if(vertices.find(v => v.equals(target))) return path
+
+            let results = vertices.map(v => v.getEdges().map(e => {return {vertex: v, label: e.label}})).reduce((arr, val) => arr.concat(val))
+            const promises: Promise<string[]|undefined>[] = []
+            for(let result of results) {
+                if(visited.find(v => v.equals(result.vertex))) continue
+                const query = view.query(Generator.from([result.vertex])).out(result.label)
+                const promise = traverse(query, path.concat([result.label]), depth + 1)
+                    .then((found) => {
+                        visited.push(result.vertex)
+                        return found
+                    })
+                promises.push(promise)
+            }
+            for await (const found of promises) {
+                if(found) return found
+            }
+        }
     }
 }
 

@@ -148,14 +148,6 @@ export default class DriveEventHandler extends MainEventHandler implements IDriv
         const filename = pathParts[pathParts.length-1]
         return this.certacrypt.getFileUrl(file, filename) 
     }
-
-    async getAllReceivedShares() : Promise<Share[]>{
-        const shares = await (await this.certacrypt.contacts).getAllShares()
-        return shares.map(share => {
-            const url = createUrl(share.share, this.certacrypt.graph.getKey(share.share), undefined, URL_TYPES.SHARE, share.name)
-            return <Share> {share: url, name: share.name, info: share.info, sharedBy: share.sharedBy}
-        })
-    }
 }
 
 function filenameFromPath(path: string) {

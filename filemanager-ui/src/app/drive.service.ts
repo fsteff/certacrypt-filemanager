@@ -84,8 +84,4 @@ export class DriveService {
   async getFileUrl(path: string): Promise<string> {
     return globals.drive.getFileUrl(path)
   }
-
-  async getAllReceivedShares() : Promise<Share[]> {
-    return globals.drive.getAllReceivedShares()
-  }
 }

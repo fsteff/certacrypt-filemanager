@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 
 import globals from '../../../src/globals'
-import {Profile, Contact} from '../../../src/EventInterfaces'
+import {Profile, Contact, Share} from '../../../src/EventInterfaces'
 
 @Injectable({
   providedIn: 'root'
@@ -44,5 +44,13 @@ export class ContactService {
 
   sendShare(user: string, url: string) {
     return globals.contacts.sendShare([user], url)
+  }
+
+  getAllReceivedShares() : Promise<Share[]> {
+    return globals.contacts.getAllReceivedShares()
+  }
+
+  getAllSentShares() : Promise<Share[]> {
+    return globals.contacts.getAllSentShares()
   }
 }
