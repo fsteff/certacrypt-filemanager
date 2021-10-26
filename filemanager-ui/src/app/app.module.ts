@@ -33,6 +33,7 @@ import { ContactsDialogComponent } from './contacts-dialog/contacts-dialog.compo
 import { FriendStateComponent } from './friend-state/friend-state.component';
 import { SidebarComponent } from './sidebar/sidebar.component';
 import { ShareListComponent } from './share-list/share-list.component';
+import { ShareOverviewComponent } from './share-overview/share-overview.component';
 
 @NgModule({
   declarations: [
@@ -47,7 +48,8 @@ import { ShareListComponent } from './share-list/share-list.component';
     ContactsDialogComponent,
     FriendStateComponent,
     SidebarComponent,
-    ShareListComponent
+    ShareListComponent,
+    ShareOverviewComponent
   ],
   imports: [
     BrowserModule,

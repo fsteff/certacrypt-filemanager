@@ -10,7 +10,8 @@ import DriveEventHandler from './DriveEventHandler'
 import ContactsEventHandler from './ContactsEventHandler'
 import { Feed } from 'hyperobjects';
 import { PubSub } from './pubsub';
-import { GraphObject, SimpleGraphObject } from 'hyper-graphdb';
+import { GraphObject, SimpleGraphObject, Vertex } from 'hyper-graphdb';
+import { Directory } from 'certacrypt/lib/graphObjects';
 
 app.on('ready', startServer)
 
@@ -75,11 +76,9 @@ async function startServer() {
     //client.network.configure(corestore.get((await certacrypt.sessionRoot).getFeed()), {announce: true, lookup: true})
 
     if(!config.sessionUrl) {
-        const driveRoot = certacrypt.graph.create<GraphObjects.Directory>()
-        await certacrypt.graph.put(driveRoot)
         const appRoot = await certacrypt.path('/apps')
-        appRoot.addEdgeTo(driveRoot, 'filemanager')
-        await certacrypt.graph.put(appRoot)
+        const appDrive = await certacrypt.drive(<Vertex<Directory>>appRoot)
+        await appDrive.promises.mkdir('/filemanager', {db: {encrypted: true}})
 
         config.sessionUrl = await certacrypt.getSessionUrl()
         const json = JSON.stringify(config)

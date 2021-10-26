@@ -120,7 +120,9 @@ export default class DriveEventHandler extends MainEventHandler implements IDriv
         const file = await this.certacrypt.path('/apps/filemanager' + path)
         const share = await this.certacrypt.createShare(file)
         const key = this.certacrypt.graph.getKey(share)
-        return createUrl(share, key)
+        const pathParts = path.split('/')
+        const filename = pathParts[pathParts.length-1]
+        return createUrl(share, key, undefined, URL_TYPES.SHARE, filename)
     }
 
     async mountShare(url: string, path: string): Promise<string> {

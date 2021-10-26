@@ -4,7 +4,23 @@
         <app-sidebar></app-sidebar>
     </mat-sidenav>
     <mat-sidenav-content>
-        shares
+        <mat-grid-list cols="2" rowHeight="4em">
+            <mat-grid-tile [colspan]="2" class="headertile">
+                <mat-grid-tile-header>Things you shared</mat-grid-tile-header>
+                <i *ngIf="!sentShares || sentShares.length === 0">nothing yet - use the context menu in the filemanager!</i>
+            </mat-grid-tile>
+            <mat-grid-tile *ngFor="let share of sentShares" [rowspan]="4">
+                <app-share-overview [share]="share" class="shareListElement"></app-share-overview>
+            </mat-grid-tile>
+
+            <mat-grid-tile [colspan]="2" class="headertile">
+                <mat-grid-tile-header>Things your friends shared</mat-grid-tile-header>
+                <i *ngIf="!receivedShares || receivedShares.length === 0">nothing yet - ask a friend to do so!</i>
+            </mat-grid-tile>
+            <mat-grid-tile *ngFor="let share of receivedShares" [rowspan]="4">
+                <app-share-overview [share]="share" class="shareListElement"></app-share-overview>
+            </mat-grid-tile>
+        </mat-grid-list>
     </mat-sidenav-content>
 </mat-sidenav-container>
 

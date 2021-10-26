@@ -1,0 +1,13 @@
+.shareListElement{
+    width: 100%;
+    padding: 0.5em 0.5em;
+    min-height: 6em;
+}
+
+mat-grid-list {
+    height: 100%;
+}
+
+.headertile {
+    height: fit-content;
+}

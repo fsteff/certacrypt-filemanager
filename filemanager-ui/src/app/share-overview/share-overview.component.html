@@ -1,0 +1,16 @@
+<mat-card>
+    <mat-card-header>
+        <app-profile-image *ngIf="sharedBy" [profile]="sharedBy"></app-profile-image>
+        <mat-icon>chevron_right</mat-icon>
+        <h3><a routerLink={{shareLink}}>{{share.drivePath}}</a></h3>
+    </mat-card-header>
+    <mat-card-content>
+        <div *ngIf="isFile"><mat-icon >description</mat-icon> File</div>
+        <div *ngIf="!isFile"><mat-icon>folder</mat-icon> {{count}} Files </div>
+        <mat-icon>event</mat-icon>{{created}}
+        <div *ngIf="sharedWith">
+            <i>shared With:</i> 
+            <div *ngFor="let user of sharedWith"><app-profile-image [profile]="user"></app-profile-image></div>
+        </div>
+    </mat-card-content>
+</mat-card>

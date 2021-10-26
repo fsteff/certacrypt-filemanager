@@ -1,0 +1,9 @@
+.mat-card-header-text {
+    margin: 0;
+    padding: 0;
+}
+
+mat-card-header {
+    border-bottom: 1px solid #aaa;
+    padding: 0.5em 0;
+}

@@ -2,7 +2,7 @@ import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core'
 import { MatSort } from '@angular/material/sort'
 import { MatTableDataSource } from '@angular/material/table'
 import { MatDialog } from '@angular/material/dialog'
-import { ActivatedRoute } from '@angular/router'
+import { ActivatedRoute, Router } from '@angular/router'
 import { DriveService } from '../drive.service'
 import { ShareDialogComponent } from '../share-dialog/share-dialog.component'
 
@@ -27,7 +27,7 @@ export class FileListComponent implements OnInit, AfterViewInit {
 
   @ViewChild(MatSort) sort: MatSort;
 
-  constructor (private drive: DriveService, private route: ActivatedRoute, private dialog: MatDialog) {}
+  constructor (private drive: DriveService, private route: ActivatedRoute, private dialog: MatDialog, private router: Router) {}
 
   ngOnInit(): void {
     this.files = new MatTableDataSource()
@@ -54,7 +54,16 @@ export class FileListComponent implements OnInit, AfterViewInit {
     this.drive.reload()
   }
 
-  getFiles(path: string) { 
+  async getFiles(path: string) { 
+    const dirStat = await this.drive.stat(path)
+    if(dirStat.isFile) {
+      const parts = path.split('/').filter(p => p.length > 0)
+      parts.splice(parts.length-1, 1)
+      path = window.encodeURIComponent(parts.join('/')) 
+      console.warn('path is a file, cannot display as directory - move one up: ' + (path || '/'))
+      this.router.navigateByUrl('/explorer/%2f' + path)
+    }
+
     this.drive.readdir(path).subscribe(files => {
       files.sort((a,b) => (a.name.toLocaleLowerCase().localeCompare(b.name.toLocaleLowerCase())))
       let dirs = files.filter(f => f.stat?.isDirectory)
@@ -78,7 +87,7 @@ export class FileListComponent implements OnInit, AfterViewInit {
   }
 }
 
-function toDate(timestamp?: string): string {
+function toDate(timestamp?: Date): string {
   if(timestamp) return new Date(timestamp).toLocaleDateString()
   else return ''
 }

@@ -29,16 +29,18 @@
     </div>
     <div class="toolbar-element">
         <!--<mat-form-field appearance="outline">-->
-            <input matInput type="text" style="background-color: white;" placeholder="hyper://..." #shareInput>
-        <!--</mat-form-field>-->
-        <button mat-raised-button [matMenuTriggerFor]="mountmenu">Mount</button>
-        
+            <form (change)="onMountChange(shareInput.value)">
+                
+                <input matInput type="text" style="background-color: white;" placeholder="hyper://..." #shareInput>
+                <button mat-raised-button [matMenuTriggerFor]="mountmenu">Mount</button>
+            </form>
+        <!--</mat-form-field>-->    
     </div>
     <mat-menu #mountmenu="matMenu">
         <div mat-menu-item>
             <form>
                 <!--<mat-form-field appearance="outline">-->
-                    <input matInput type="text" placeholder="Name" #mountName (click)="$event.stopPropagation()">
+                    <input matInput [value]="mountShareName" type="text" placeholder="Name" #mountName (click)="$event.stopPropagation()">
                 <!--</mat-form-field>-->
                 <button mat-raised-button (click)="onMount(shareInput.value, mountName.value)">mount</button>
             </form>

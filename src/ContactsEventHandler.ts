@@ -6,10 +6,25 @@ import { Generator, GraphObject, GRAPH_VIEW, IVertex, Query, Vertex, VertexQueri
 import { Contact, IContactsEventHandler, Profile, Share } from "./EventInterfaces";
 import { MainEventHandler } from "./MainEventHandler";
 import { PubSub } from "./pubsub";
+import { GraphObjectTypeNames } from 'certacrypt/lib/graphObjects';
 
 export default class ContactsEventHandler extends MainEventHandler implements IContactsEventHandler {
     constructor(app: IpcMain, readonly certacrypt: CertaCrypt, readonly pubsub: PubSub) {
         super(app, 'contacts')
+        this.certacrypt.contacts.then(async contacts => {
+            // download and seed the main feed of all friends
+            const friends = await contacts.getFriends()
+            for (const friend of friends) {
+                const feed = friend.publicRoot.getFeed()
+                const name = (await friend.getProfile())?.username || friend.getPublicUrl()
+                const store = await this.certacrypt.graph.core.getStore(feed)
+                console.log('DEBUG: starting download of friend feed: ' + name)
+                store.feed.feed.download(undefined, err => {
+                    if(err) console.error('download of friend feed failed: ' + err)
+                    else console.log('DEBUG: download of friend feed finished: ' + name)
+                })
+            }
+        })
     }
 
     static async init(app: IpcMain, certacrypt: CertaCrypt, pubsub: PubSub) {
@@ -129,7 +144,7 @@ export default class ContactsEventHandler extends MainEventHandler implements IC
                     })
                 promises.push(promise)
             }
-            for await (const found of promises) {
+            for (const found of await Promise.all(promises)) {
                 if(found) return found
             }
         }
