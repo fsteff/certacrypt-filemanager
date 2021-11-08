@@ -77,8 +77,13 @@ async function startServer() {
 
     if(!config.sessionUrl) {
         const appRoot = await certacrypt.path('/apps')
-        const appDrive = await certacrypt.drive(<Vertex<Directory>>appRoot)
-        await appDrive.promises.mkdir('/filemanager', {db: {encrypted: true}})
+        const driveRoot = certacrypt.graph.create<Directory>()
+        await certacrypt.graph.put(driveRoot)
+        appRoot.addEdgeTo(driveRoot, 'filemanager')
+        await certacrypt.graph.put(appRoot)
+
+        const appDrive = await certacrypt.drive(<Vertex<Directory>>driveRoot)
+        await appDrive.promises.mkdir('/', {db: {encrypted: true}})
 
         config.sessionUrl = await certacrypt.getSessionUrl()
         const json = JSON.stringify(config)
