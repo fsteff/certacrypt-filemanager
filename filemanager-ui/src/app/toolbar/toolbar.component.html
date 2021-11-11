@@ -18,7 +18,7 @@
         <div mat-menu-item>
             <form>
                 <!--<mat-form-field appearance="outline">-->
-                    <input matInput type="text" placeholder="Name" #mkdirName (click)="$event.stopPropagation()">
+                    <input type="text" placeholder="Name" #mkdirName (click)="$event.stopPropagation()">
                 <!--</mat-form-field-->
                 <button mat-raised-button (click)="onMkdir(mkdirName.value)">create</button>
             </form>

@@ -73,17 +73,27 @@ async function startServer() {
     enableDebugLogging()
 
     const certacrypt = new CertaCrypt(corestore, crypto, config.sessionUrl)
-    //client.network.configure(corestore.get((await certacrypt.sessionRoot).getFeed()), {announce: true, lookup: true})
+    client.network.configure(corestore.get((await certacrypt.sessionRoot).getFeed()), {announce: true, lookup: true})
 
     if(!config.sessionUrl) {
         const appRoot = await certacrypt.path('/apps')
-        const driveRoot = certacrypt.graph.create<Directory>()
+        let driveRoot = certacrypt.graph.create<Directory>()
         await certacrypt.graph.put(driveRoot)
         appRoot.addEdgeTo(driveRoot, 'filemanager')
         await certacrypt.graph.put(appRoot)
 
         const appDrive = await certacrypt.drive(<Vertex<Directory>>driveRoot)
         await appDrive.promises.mkdir('/', {db: {encrypted: true}})
+        await appDrive.promises.mkdir('/shares', {db: {encrypted: true}})
+        
+        driveRoot = <Vertex<Directory>> await certacrypt.path('/apps/filemanager')
+        const edges = driveRoot.getEdges().map(edge => {
+            if(edge.label === 'shares') edge.view = DriveShare.DRIVE_SHARE_VIEW
+            return edge
+        })
+        driveRoot.setEdges(edges)
+        await certacrypt.graph.put(driveRoot)
+        
 
         config.sessionUrl = await certacrypt.getSessionUrl()
         const json = JSON.stringify(config)
