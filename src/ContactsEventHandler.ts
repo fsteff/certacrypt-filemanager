@@ -2,7 +2,7 @@ import os from 'os'
 import { CertaCrypt, GraphObjects, User, FriendState, parseUrl, URL_TYPES, createUrl, CommShare } from "certacrypt";
 import { ShareGraphObject } from 'certacrypt-graph';
 import { IpcMain, dialog } from "electron";
-import { Generator, GraphObject, GRAPH_VIEW, IVertex, Query, Vertex, VertexQueries } from "hyper-graphdb";
+import { Generator, GraphObject, GRAPH_VIEW, IVertex, Query, QueryState, Vertex, VertexQueries } from "hyper-graphdb";
 import { Contact, IContactsEventHandler, Profile, Share } from "./EventInterfaces";
 import { MainEventHandler } from "./MainEventHandler";
 import { PubSub } from "./pubsub";
@@ -121,7 +121,7 @@ export default class ContactsEventHandler extends MainEventHandler implements IC
         const appRoot = await this.certacrypt.path('/apps/filemanager')
         const view = this.certacrypt.graph.factory.get(GRAPH_VIEW)
         const visited: IVertex<GraphObject>[] = []
-        const path = await traverse(view.query(Generator.from([appRoot])), [], 0)
+        const path = await traverse(view.query(Generator.from([new QueryState(appRoot, [], [])])), [], 0)
         const drivePath = path ? path.join('/') : undefined
         
         return <Share> {shareUrl, drivePath, name: share.name, info: share.info, owner: share.owner, sharedBy: share.sharedBy, sharedWith: share.sharedWith}
@@ -136,7 +136,7 @@ export default class ContactsEventHandler extends MainEventHandler implements IC
             const promises: Promise<string[]|undefined>[] = []
             for(let result of results) {
                 if(visited.find(v => v.equals(result.vertex))) continue
-                const query = view.query(Generator.from([result.vertex])).out(result.label)
+                const query = view.query(Generator.from([new QueryState(result.vertex, [], [])])).out(result.label)
                 const promise = traverse(query, path.concat([result.label]), depth + 1)
                     .then((found) => {
                         visited.push(result.vertex)

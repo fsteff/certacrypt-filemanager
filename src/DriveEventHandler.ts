@@ -6,6 +6,7 @@ import { IDriveEventHandler, FileDownload , Stat, readdirResult, Peer, Share} fr
 import unixify from 'unixify'
 import { GraphObject, Vertex } from "hyper-graphdb";
 import Client from '@hyperspace/client'
+import { DriveGraphObject } from "certacrypt/lib/graphObjects";
 
 export default class DriveEventHandler extends MainEventHandler implements IDriveEventHandler{
     private downloads: Array<FileDownload> = []
@@ -145,7 +146,7 @@ export default class DriveEventHandler extends MainEventHandler implements IDriv
     }
 
     async getFileUrl(path: string): Promise<string> {
-        const file = await this.certacrypt.path('/apps/filemanager' + path)
+        const file = <Vertex<DriveGraphObject>> await this.certacrypt.path('/apps/filemanager' + path)
         const pathParts = path.split('/')
         const filename = pathParts[pathParts.length-1]
         return this.certacrypt.getFileUrl(file, filename) 
