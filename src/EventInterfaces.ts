@@ -41,7 +41,7 @@ export type Peer = {};
 
 export type FileDownload = {filename: string, size: number, downloaded: number, error?: Error, localPath?: string}
 
-export type readdirResult = { name: string, path: string, stat: Stat }
+export type readdirResult = { name: string, path: string, writers: string[], stat: Stat }
 
 export interface ICertaCryptEventHandler {
     
