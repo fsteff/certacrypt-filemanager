@@ -1,4 +1,4 @@
-import { ContactProfile, FriendState, GraphObjects, CommShare } from 'certacrypt'
+import { ContactProfile, FriendState, GraphObjects } from 'certacrypt'
 import { GraphObject } from 'hyper-graphdb';
 
 export type Fd = number
@@ -37,11 +37,13 @@ export type Share =  {
     drivePath: string
 }
 
+export type Space = {space: string, owner: string, writers: string[], isWriteable: boolean}
+
 export type Peer = {};
 
 export type FileDownload = {filename: string, size: number, downloaded: number, error?: Error, localPath?: string}
 
-export type readdirResult = { name: string, path: string, writers: string[], stat: Stat }
+export type readdirResult = { name: string, path: string, space?: Space, stat: Stat }
 
 export interface ICertaCryptEventHandler {
     
@@ -84,4 +86,6 @@ export interface IDriveEventHandler {
 
     lookupPeers(url: string): Promise<Peer>
     getFileUrl(path: string): Promise<string>
+
+    addWriterToSpace(path: string, user: string): Promise<Space>
 }

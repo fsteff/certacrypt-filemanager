@@ -18,11 +18,17 @@
                     <th mat-header-cell *matHeaderCellDef>Name</th>
                     <td mat-cell *matCellDef="let user">{{user.username}}</td>
                 </ng-container>
-                <ng-container matColumnDef="reserved">
-                    <th mat-header-cell *matHeaderCellDef></th>
-                    <td mat-cell *matCellDef="let user"></td>
+                <ng-container matColumnDef="writer">
+                    <th mat-header-cell *matHeaderCellDef style="text-align: right;">Write Access</th>
+                    <td mat-cell *matCellDef="let user">
+                        <button mat-icon-button (click)="toggleWriter(user)">
+                            <mat-icon *ngIf="this.isWriter(user.publicUrl)" class="icon-green" matTooltip="Click to remove write access">check_circle</mat-icon>
+                            <mat-icon *ngIf="!this.isWriter(user.publicUrl)" class="icon-red" matTooltip="Click to permit write access">cancel</mat-icon>
+                        </button>
+                    </td>
                 </ng-container>
-                <tr mat-row *matRowDef="let row; columns: ['icon', 'name'];"></tr>
+                <tr mat-row *matRowDef="let row; columns: ['icon', 'name', 'writer'];"></tr>
+                <tr mat-header-row *matHeaderRowDef="['icon', 'name', 'writer']"></tr>
             </table>
             </div>
             <i *ngIf="sharedWith?.length === 0">no contacts selected</i>
@@ -41,7 +47,7 @@
                     <td mat-cell *matCellDef="let user">{{user.username}}</td>
                 </ng-container>
                 <ng-container matColumnDef="add">
-                    <th mat-header-cell *matHeaderCellDef></th>
+                    <th mat-header-cell *matHeaderCellDef>Share</th>
                     <td mat-cell *matCellDef="let user"><button mat-icon-button (click)="onAdd(user)"><mat-icon>add_circle_outline</mat-icon></button></td>
                 </ng-container>
                 <tr mat-row *matRowDef="let row; columns: ['icon', 'name', 'add'];"></tr>

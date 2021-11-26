@@ -51,11 +51,25 @@ export class ShareDialogComponent implements OnInit {
     this.allContacts = allContacts
   }
 
+  isWriter(user: string) {
+    return this.fileData.space?.writers.includes(user)
+  }
+
   onCopy() {
     const input = this.urlInput.nativeElement
     input.select()
     document.execCommand('copy')
     this.snackBarRef.open('Share URL copied to clipboard!', 'dismiss', {duration: 2000})
+  }
+
+  async toggleWriter(user: Contact) {
+    if(this.isWriter(user.publicUrl)) {
+      this.snackBarRef.open('Revoking write access is not implemented', 'dismiss', {duration: 2000})
+    } else {
+      this.fileData.space = await this.drive.addWriterToSpace(this.fileData.path, user.publicUrl)
+      console.log('converted directory ' + this.fileData.path + ' to collaboration space')
+      this.sharedWithTable?.renderRows()
+    }
   }
 
   async onAdd(user: Contact) {

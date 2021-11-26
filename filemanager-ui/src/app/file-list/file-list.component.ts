@@ -5,6 +5,7 @@ import { MatDialog } from '@angular/material/dialog'
 import { ActivatedRoute, Router } from '@angular/router'
 import { DriveService } from '../drive.service'
 import { ShareDialogComponent } from '../share-dialog/share-dialog.component'
+import { Space } from '../../../../src/EventInterfaces'
 
 export interface FileData {
   name: string, 
@@ -13,7 +14,8 @@ export interface FileData {
   icon?: string,
   size: string, 
   lastChanged: string, 
-  path: string
+  path: string,
+  space?: Space
 }
 
 @Component({
@@ -73,14 +75,23 @@ export class FileListComponent implements OnInit, AfterViewInit {
         files.map(r => {
           let name = window.decodeURIComponent(r.name)
           if(name.length > 64) name = name.substr(0, 32) + '...'
+          let icon = 'description'
+          if(r.stat?.isDirectory) {
+            if(r.space) {
+              icon = 'folder_shared'
+            } else {
+              icon = 'folder'
+            }
+          }
           return {
             name: name,
             path: r.path,
             isFile: r.stat?.isFile,
-            icon: r.stat?.isDirectory ? 'folder' : 'description',
-            link: r.stat?.isDirectory ? '/explorer/' + window.encodeURIComponent(r.path) : undefined,
+            icon: icon,
+            link: r.stat?.isDirectory ? '/explorer/' + window.encodeURIComponent(r.path) : undefined, // TODO: download link?
             size: formatSize(r.stat?.size), 
-            lastChanged: toDate(r.stat?.mtime)
+            lastChanged: toDate(r.stat?.mtime),
+            space: r.space
           }
         })
     })

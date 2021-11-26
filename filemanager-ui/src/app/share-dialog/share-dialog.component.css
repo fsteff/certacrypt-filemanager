@@ -40,3 +40,11 @@ mat-expansion-panel {
     padding-top: 0.5em;
     padding-bottom: 0.5em;
 }
+
+.icon-green {
+    color: #a5ca65
+}
+
+.icon-red {
+    color: #5c3939
+}

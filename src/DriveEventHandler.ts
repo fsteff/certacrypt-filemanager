@@ -1,22 +1,24 @@
-import { CertaCrypt, GraphObjects, Hyperdrive, createUrl, parseUrl, URL_TYPES, DriveShare } from "certacrypt";
+import { CertaCrypt, GraphObjects, CryptoHyperdrive, createUrl, parseUrl, URL_TYPES, DriveShare } from "certacrypt";
 import { IpcMain, dialog } from "electron";
 import fs from 'fs'
 import { MainEventHandler } from "./MainEventHandler";
-import { IDriveEventHandler, FileDownload , Stat, readdirResult, Peer, Share} from "./EventInterfaces";
+import { IDriveEventHandler, FileDownload , Stat, readdirResult, Peer, Share, Space} from "./EventInterfaces";
 import unixify from 'unixify'
 import { GraphObject, Vertex } from "hyper-graphdb";
 import Client from '@hyperspace/client'
 import { DriveGraphObject } from "certacrypt/lib/graphObjects";
+import { CollaborationSpace } from "certacrypt/lib/space";
 
 export default class DriveEventHandler extends MainEventHandler implements IDriveEventHandler{
     private downloads: Array<FileDownload> = []
+    private static readonly appPath = '/apps/filemanager'
 
-    constructor(app: IpcMain, private drive: Hyperdrive, private certacrypt: CertaCrypt, private hyperspace: Client) {
+    constructor(app: IpcMain, private drive: CryptoHyperdrive, private certacrypt: CertaCrypt, private hyperspace: Client) {
         super(app, 'drive')
     }
 
     static async init(app: IpcMain, certacrypt: CertaCrypt, hyperspace: Client): Promise<DriveEventHandler> {
-        let rootVertex = <Vertex<GraphObjects.Directory>> await certacrypt.path('/apps/filemanager')
+        let rootVertex = <Vertex<GraphObjects.Directory>> await certacrypt.path(this.appPath)
         const drive = await certacrypt.drive(rootVertex)
 
         const shareEdge = rootVertex.getEdges('shares')
@@ -150,6 +152,25 @@ export default class DriveEventHandler extends MainEventHandler implements IDriv
         const pathParts = path.split('/')
         const filename = pathParts[pathParts.length-1]
         return this.certacrypt.getFileUrl(file, filename) 
+    }
+
+    async convertToSpace(path: string): Promise<{space: CollaborationSpace,metadata: Space}> {
+        await this.certacrypt.convertToCollaborationSpace(DriveEventHandler.appPath + path)
+        const spaceMeta = await this.drive.getSpace(path)
+        if(!spaceMeta?.metadata) {
+            throw new Error('convertToSpace: conversion failed for ' + path)
+        }
+        return spaceMeta
+    }
+    async addWriterToSpace(path: string, userUrl: string) {
+        let fileSpace = await this.drive.getSpace(path)
+        if(!fileSpace?.space) {
+            fileSpace = await this.convertToSpace(path)
+        }
+        const user = await this.certacrypt.getUserByUrl(userUrl)
+        await fileSpace.space.addWriter(user)
+        fileSpace.metadata.writers.push(userUrl)
+        return <Space> fileSpace.metadata
     }
 }
 

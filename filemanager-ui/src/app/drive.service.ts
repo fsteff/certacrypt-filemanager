@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core'
 import globals from '../../../src/globals'
 import { Observable, from } from 'rxjs'
-import { readdirResult, FileDownload, Stat, Share } from '../../../src/EventInterfaces'
+import { readdirResult, FileDownload, Stat, Share, Space } from '../../../src/EventInterfaces'
 import { ActivatedRoute } from '@angular/router'
 
 @Injectable({
@@ -75,13 +75,14 @@ export class DriveService {
   }
 
   async mountShare(url: string, path: string): Promise<string> {
-    //console.log('waiting for peers')
-    //const firstPeer = await globals.drive.lookupPeers(url)
-    //console.log('first peer: ' + firstPeer)
     return globals.drive.mountShare(url, path)
   }
 
   async getFileUrl(path: string): Promise<string> {
     return globals.drive.getFileUrl(path)
+  }
+
+  async addWriterToSpace(path: string, user: string): Promise<Space> {
+    return globals.drive.addWriterToSpace(path, user)
   }
 }
