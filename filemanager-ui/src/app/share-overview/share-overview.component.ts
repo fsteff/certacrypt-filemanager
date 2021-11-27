@@ -25,6 +25,7 @@ export class ShareOverviewComponent implements OnInit {
   created: string
   isFile: boolean
   count: number
+  filePath: string
 
   constructor(private contacts: ContactService, private drive: DriveService) { }
 
@@ -33,6 +34,19 @@ export class ShareOverviewComponent implements OnInit {
     if(this.showSharedWith) this.sharedWith = await Promise.all(this.share.sharedWith.map(u => this.contacts.getUserByUrl(u)))
     if(this.share.drivePath) {
       this.shareLink = '/explorer/' + window.encodeURIComponent(this.share.drivePath)
+      
+      const path = this.share.drivePath.split('/')
+      let filename = path[path.length-1]
+      if(filename.length > 64) filename = filename.slice(0, 16) + '...'
+
+      path.splice(path.length-1, 1)
+      if(this.share.name) {
+        const usr = await this.contacts.getProfile(this.share.owner)
+        filename = usr.username + ': ' + this.share.name
+      }
+
+      this.filePath = path.concat(filename).join('/')
+
       const info = await this.drive.stat(this.share.drivePath)
       this.isFile = info.isFile
       this.created = info.ctime.toLocaleString()

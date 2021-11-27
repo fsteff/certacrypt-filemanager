@@ -16,9 +16,7 @@ export class ShareListComponent implements OnInit {
 
   async ngOnInit() {
     this.sentShares = await this.contacts.getAllSentShares()
-    console.log(this.sentShares)
     this.receivedShares = await this.contacts.getAllReceivedShares() 
-    console.log(this.receivedShares)
   }
 
 }

@@ -5,7 +5,8 @@ import { MatDialog } from '@angular/material/dialog'
 import { ActivatedRoute, Router } from '@angular/router'
 import { DriveService } from '../drive.service'
 import { ShareDialogComponent } from '../share-dialog/share-dialog.component'
-import { Space } from '../../../../src/EventInterfaces'
+import { Contact, Space } from '../../../../src/EventInterfaces'
+import { ContactService } from '../contact.service'
 
 export interface FileData {
   name: string, 
@@ -26,10 +27,11 @@ export interface FileData {
 export class FileListComponent implements OnInit, AfterViewInit {
   files: MatTableDataSource<FileData>
   columnsToDisplay = ['icon', 'name', 'size', 'lastChanged', 'more']
+  loadedContacts = new Map<string, Contact>()
 
   @ViewChild(MatSort) sort: MatSort;
 
-  constructor (private drive: DriveService, private route: ActivatedRoute, private dialog: MatDialog, private router: Router) {}
+  constructor (private drive: DriveService, private contacts: ContactService, private route: ActivatedRoute, private dialog: MatDialog, private router: Router) {}
 
   ngOnInit(): void {
     this.files = new MatTableDataSource()
@@ -66,14 +68,18 @@ export class FileListComponent implements OnInit, AfterViewInit {
       this.router.navigateByUrl('/explorer/%2f' + path)
     }
 
-    this.drive.readdir(path).subscribe(files => {
+    this.drive.readdir(path).subscribe(async files => {
       files.sort((a,b) => (a.name.toLocaleLowerCase().localeCompare(b.name.toLocaleLowerCase())))
       let dirs = files.filter(f => f.stat?.isDirectory)
       files = dirs.concat(files.filter(f => ! f.stat?.isDirectory))
 
-      this.files.data = 
-        files.map(r => {
-          let name = window.decodeURIComponent(r.name)
+      this.files.data = await Promise.all(
+        files.map(async r => {
+          let name =  window.decodeURIComponent(r.name)
+          if(r.share) {
+            const usr = await this.getContact(r.share.owner)
+            name = usr.username + ': ' + (r.share.name || name)
+          }
           if(name.length > 64) name = name.substr(0, 32) + '...'
           let icon = 'description'
           if(r.stat?.isDirectory) {
@@ -93,8 +99,15 @@ export class FileListComponent implements OnInit, AfterViewInit {
             lastChanged: toDate(r.stat?.mtime),
             space: r.space
           }
-        })
+        }))
     })
+  }
+
+  async getContact(url: string) {
+    if(this.loadedContacts.has(url)) return this.loadedContacts.get(url)
+    const profile = await this.contacts.getProfile(url)
+    this.loadedContacts.set(url, profile)
+    return profile
   }
 }
 

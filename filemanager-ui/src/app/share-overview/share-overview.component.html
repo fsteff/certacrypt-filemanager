@@ -2,7 +2,7 @@
     <mat-card-header>
         <app-profile-image *ngIf="sharedBy" [profile]="sharedBy"></app-profile-image>
         <mat-icon>chevron_right</mat-icon>
-        <h3><a routerLink={{shareLink}}>{{share.drivePath}}</a></h3>
+        <h3><a routerLink={{shareLink}}>{{filePath}}</a></h3>
     </mat-card-header>
     <mat-card-content>
         <div *ngIf="isFile"><mat-icon >description</mat-icon> File</div>

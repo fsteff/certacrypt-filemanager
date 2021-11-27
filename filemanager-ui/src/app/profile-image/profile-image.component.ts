@@ -16,6 +16,9 @@ export class ProfileImageComponent implements OnInit {
   profile: Contact
 
   @Input()
+  tooltip: string
+
+  @Input()
   writeable = false
 
   backgroundImage: string
@@ -27,6 +30,7 @@ export class ProfileImageComponent implements OnInit {
     if(!this.profile) {
       this.profile = await this.contacts.getProfile()
       this.writeable = true
+      this.tooltip = this.tooltip || 'You'
     }
 
     if(this.profile?.profilePicture) {

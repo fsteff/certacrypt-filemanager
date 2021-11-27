@@ -1,3 +1,3 @@
-<div class="image-circle" [ngStyle]="{backgroundImage: backgroundImage}" (click)="onClick()">
+<div class="image-circle" [ngStyle]="{backgroundImage: backgroundImage}" (click)="onClick()" matTooltip="{{tooltip || profile.username}}">
     <mat-icon *ngIf="!backgroundImage" class="no-image">person</mat-icon>
 </div>

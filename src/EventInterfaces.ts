@@ -37,13 +37,20 @@ export type Share =  {
     drivePath: string
 }
 
+export type ShareMeta = {
+    owner: string,
+    name: string, 
+    share: string,
+    path: string
+}
+
 export type Space = {space: string, owner: string, writers: string[], isWriteable: boolean}
 
 export type Peer = {};
 
 export type FileDownload = {filename: string, size: number, downloaded: number, error?: Error, localPath?: string}
 
-export type readdirResult = { name: string, path: string, space?: Space, stat: Stat }
+export type readdirResult = { name: string, path: string, stat: Stat, space?: Space, share?: ShareMeta }
 
 export interface ICertaCryptEventHandler {
     

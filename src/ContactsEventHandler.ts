@@ -97,11 +97,9 @@ export default class ContactsEventHandler extends MainEventHandler implements IC
         return profile
     }
 
-    async sendShare(userUrls: string[], url: string) {
-        const parsed = parseUrl(url)
-        const vertex = <Vertex<ShareGraphObject>> await this.certacrypt.graph.get(parsed.id, parsed.feed, parsed.key)
+    async sendShare(userUrls: string[], shareUrl: string) {
         const users = await Promise.all(userUrls.map(u => this.certacrypt.getUserByUrl(u)))
-        await this.certacrypt.sendShare(vertex, users)
+        await this.certacrypt.sendShare(shareUrl, users)
     }
 
     async getAllReceivedShares() : Promise<Share[]>{
