@@ -30,17 +30,18 @@ export class ShareDialogComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA) public fileData: FileData) { }
 
   async ngOnInit(): Promise<void> {
-    this.url = await this.drive.createShare(this.fileData.path)
+    //this.url = await this.drive.createShare(this.fileData.path)
     const allContacts = await this.contacts.getAllContacts()
   
     const shares = await this.contacts.getAllSentShares()
-    const urlParsed = new URL(this.url)
-    const details = shares.find(s => {
-      const parsed = new URL(s.shareUrl)
-      return parsed.pathname === urlParsed.pathname
+    //const urlParsed = new URL(this.url)
+    const details = shares.filter(s => {
+      //const parsed = new URL(s.shareUrl)
+      // TODO: test
+      return normalize(s.drivePath) === normalize(this.fileData.path)
     })
     if(details) {
-      this.sharedWith = await Promise.all(details.sharedWith.map(u => this.contacts.getProfile(u)))
+      this.sharedWith = await Promise.all(flatMap(details.map(d => d.sharedWith.map(u => this.contacts.getProfile(u)))))
       for (const user of this.sharedWith) {
         const idx = allContacts.findIndex(u => u.publicUrl === user.publicUrl)
         if(idx >= 0) allContacts.splice(idx, 1)
@@ -73,11 +74,23 @@ export class ShareDialogComponent implements OnInit {
   }
 
   async onAdd(user: Contact) {
-    await this.contacts.sendShare(user.publicUrl, this.url)
+    await this.contacts.sendShare(user.publicUrl, this.fileData.path)
     this.allContacts.splice(this.allContacts.indexOf(user), 1)
     this.sharedWith.push(user)
     this.sharedWith.sort((a,b) => a.username?.localeCompare(b.username))
     this.allContactsTable?.renderRows()
     this.sharedWithTable?.renderRows()
   }
+}
+
+function flatMap<T>(arr: T[][]) {
+  return arr.reduce((acc, x) => acc.concat(x), [])
+}
+
+function normalize(path: string) {
+  return path.replace('\\', '/')
+  .split('/')
+  .map(s => s.trim())
+  .filter(s => s.length > 0)
+  .join('/')
 }

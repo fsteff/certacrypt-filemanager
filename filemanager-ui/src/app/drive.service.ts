@@ -71,7 +71,7 @@ export class DriveService {
   }
 
   async createShare(path: string): Promise<string>{
-    return globals.drive.createShare(path)
+    return globals.drive.createUrlShare(path)
   }
 
   async mountShare(url: string, path: string): Promise<string> {

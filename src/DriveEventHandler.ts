@@ -21,17 +21,7 @@ export default class DriveEventHandler extends MainEventHandler implements IDriv
         let rootVertex = <Vertex<GraphObjects.Directory>> await certacrypt.path(this.appPath)
         const drive = await certacrypt.drive(rootVertex)
 
-        const shareEdge = rootVertex.getEdges('shares')
-        if(!shareEdge || shareEdge.length === 0) {
-            await drive.promises.mkdir('shares', {db:{encrypted: true}})
-            rootVertex = <Vertex<GraphObjects.Directory>> await certacrypt.graph.get(rootVertex.getId(), rootVertex.getFeed())
-            const edges = rootVertex.getEdges().map(edge => {
-                if(edge.label === 'shares') edge.view = DriveShare.DRIVE_SHARE_VIEW
-                return edge
-            })
-            rootVertex.setEdges(edges)
-            await certacrypt.graph.put(rootVertex)
-        }
+        await (await certacrypt.driveShares).mountAt(drive, rootVertex, 'shares')
 
         return new DriveEventHandler(app, drive, certacrypt, hyperspace)
     }
@@ -119,9 +109,9 @@ export default class DriveEventHandler extends MainEventHandler implements IDriv
         return uploads.map(u => u.target)
     }
 
-    async createShare(path: string): Promise<string> {
+    async createUrlShare(path: string): Promise<string> {
         const file = await this.certacrypt.path('/apps/filemanager' + path)
-        const share = await this.certacrypt.createShare(file)
+        const share = await this.certacrypt.createShare(file, true)
         const key = this.certacrypt.graph.getKey(share)
         const pathParts = path.split('/')
         const filename = pathParts[pathParts.length-1]

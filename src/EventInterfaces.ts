@@ -68,7 +68,7 @@ export interface IContactsEventHandler {
     readProfileImage(url: string): Promise<string> 
     getUserByUrl(url: string): Promise<Contact>
     getFriendState(url: string): Promise<FriendState>
-    sendShare(userUrls: string[], url: string): Promise<void>
+    sendShare(userUrls: string[], path: string): Promise<void>
 
     getAllReceivedShares() : Promise<Share[]>
     getAllSentShares(): Promise<Share[]>
@@ -88,7 +88,7 @@ export interface IDriveEventHandler {
 
     uploadFile(path: string, multiple: boolean): Promise<string[]>
 
-    createShare(path: string): Promise<string>
+    createUrlShare(path: string): Promise<string>
     mountShare(url: string, path: string): Promise<string>
 
     lookupPeers(url: string): Promise<Peer>

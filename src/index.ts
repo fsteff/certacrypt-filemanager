@@ -84,16 +84,7 @@ async function startServer() {
 
         const appDrive = await certacrypt.drive(<Vertex<Directory>>driveRoot)
         await appDrive.promises.mkdir('/', {db: {encrypted: true}})
-        await appDrive.promises.mkdir('/shares', {db: {encrypted: true}})
-        
-        driveRoot = <Vertex<Directory>> await certacrypt.path('/apps/filemanager')
-        const edges = driveRoot.getEdges().map(edge => {
-            if(edge.label === 'shares') edge.view = DriveShare.DRIVE_SHARE_VIEW
-            return edge
-        })
-        driveRoot.setEdges(edges)
-        await certacrypt.graph.put(driveRoot)
-        
+        await appDrive.promises.mkdir('/shares', {db: {encrypted: true}})      
 
         config.sessionUrl = await certacrypt.getSessionUrl()
         const json = JSON.stringify(config)
