@@ -72,6 +72,8 @@ export interface IContactsEventHandler {
 
     getAllReceivedShares() : Promise<Share[]>
     getAllSentShares(): Promise<Share[]>
+
+    revokeShare(userUrl: string, path: string): Promise<void>
 }
 
 export interface IDriveEventHandler {

@@ -65,7 +65,8 @@ export class ShareDialogComponent implements OnInit {
 
   async toggleWriter(user: Contact) {
     if(this.isWriter(user.publicUrl)) {
-      this.snackBarRef.open('Revoking write access is not implemented', 'dismiss', {duration: 2000})
+      //this.snackBarRef.open('Revoking write access is not implemented', 'dismiss', {duration: 2000})
+      this.contacts.revokeShare(user.publicUrl, this.fileData.path)
     } else {
       this.fileData.space = await this.drive.addWriterToSpace(this.fileData.path, user.publicUrl)
       console.log('converted directory ' + this.fileData.path + ' to collaboration space')

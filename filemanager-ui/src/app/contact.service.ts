@@ -53,4 +53,8 @@ export class ContactService {
   getAllSentShares() : Promise<Share[]> {
     return globals.contacts.getAllSentShares()
   }
+
+  revokeShare(userUrl: string, path: string) : Promise<void> {
+    return globals.contacts.revokeShare(userUrl, path)
+  }
 }

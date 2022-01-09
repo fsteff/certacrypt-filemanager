@@ -107,7 +107,15 @@ export default class ContactsEventHandler extends MainEventHandler implements IC
             const url = createUrl(share, this.certacrypt.graph.getKey(share), undefined, URL_TYPES.SHARE, name)
             await this.certacrypt.sendShare(url, [user])
         }
-        
+    }
+
+    async revokeShare(userUrl: string, path: string) {
+        const driveShares = await this.certacrypt.driveShares
+        const allShares = await (await this.certacrypt.contacts).getAllSentShares()
+        const vertex = await this.certacrypt.path('/apps/filemanager' + path)
+        const share = allShares.find(s => s.sharedWith.includes(userUrl) && s.target.equals(vertex))
+        if(!share) throw new Error('cannot find share to path ' + path)
+        await driveShares.revokeShare(<Vertex<ShareGraphObject>>share.share)
     }
 
     async getAllReceivedShares() : Promise<Share[]>{
