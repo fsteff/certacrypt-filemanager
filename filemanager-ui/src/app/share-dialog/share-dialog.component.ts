@@ -30,14 +30,13 @@ export class ShareDialogComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA) public fileData: FileData) { }
 
   async ngOnInit(): Promise<void> {
-    //this.url = await this.drive.createShare(this.fileData.path)
+    return this.reloadShares()
+  }
+
+  async reloadShares() {
     const allContacts = await this.contacts.getAllContacts()
-  
     const shares = await this.contacts.getAllSentShares()
-    //const urlParsed = new URL(this.url)
     const details = shares.filter(s => {
-      //const parsed = new URL(s.shareUrl)
-      // TODO: test
       return normalize(s.drivePath) === normalize(this.fileData.path)
     })
     if(details) {
@@ -50,6 +49,8 @@ export class ShareDialogComponent implements OnInit {
 
     allContacts.sort((a,b) => a.username?.localeCompare(b.username))
     this.allContacts = allContacts
+    this.allContactsTable?.renderRows()
+    this.sharedWithTable?.renderRows()
   }
 
   isWriter(user: string) {
@@ -65,8 +66,8 @@ export class ShareDialogComponent implements OnInit {
 
   async toggleWriter(user: Contact) {
     if(this.isWriter(user.publicUrl)) {
-      //this.snackBarRef.open('Revoking write access is not implemented', 'dismiss', {duration: 2000})
-      this.contacts.revokeShare(user.publicUrl, this.fileData.path)
+      this.snackBarRef.open('Revoking write access is not implemented', 'dismiss', {duration: 2000})
+      //this.contacts.revokeShare(user.publicUrl, this.fileData.path)
     } else {
       this.fileData.space = await this.drive.addWriterToSpace(this.fileData.path, user.publicUrl)
       console.log('converted directory ' + this.fileData.path + ' to collaboration space')
@@ -74,13 +75,14 @@ export class ShareDialogComponent implements OnInit {
     }
   }
 
+  async onRevokeRead(user: Contact) {
+    await this.contacts.revokeShare(user.publicUrl, this.fileData.path)
+    this.reloadShares()
+  }
+
   async onAdd(user: Contact) {
     await this.contacts.sendShare(user.publicUrl, this.fileData.path)
-    this.allContacts.splice(this.allContacts.indexOf(user), 1)
-    this.sharedWith.push(user)
-    this.sharedWith.sort((a,b) => a.username?.localeCompare(b.username))
-    this.allContactsTable?.renderRows()
-    this.sharedWithTable?.renderRows()
+    this.reloadShares()
   }
 }
 
