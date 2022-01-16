@@ -33,7 +33,7 @@ export default class Main {
         Main.mainWindow
             .loadURL('file://' + __dirname + '/ui/index.html');
         Main.mainWindow.on('closed', Main.onClose);
-        Main.mainWindow.webContents.openDevTools();
+        //Main.mainWindow.webContents.openDevTools();
     }
 
     static main(app: Electron.App, browserWindow: typeof BrowserWindow) {

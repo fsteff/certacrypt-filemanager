@@ -2,7 +2,7 @@ import os from 'os'
 import { CertaCrypt, GraphObjects, FriendState, URL_TYPES, createUrl, CommShare } from '@certacrypt/certacrypt'
 import { ShareGraphObject } from '@certacrypt/certacrypt-graph'
 import { IpcMain, dialog } from "electron"
-import { Generator, GraphObject, GRAPH_VIEW, IVertex, Query, QueryState, STATIC_VIEW, Vertex } from "hyper-graphdb"
+import { Generator, GraphObject, GRAPH_VIEW, IVertex, Query, QueryState, STATIC_VIEW, Vertex } from '@certacrypt/hyper-graphdb'
 import { Contact, IContactsEventHandler, Profile, Share } from "./EventInterfaces"
 import { MainEventHandler } from "./MainEventHandler"
 import { PubSub } from "./pubsub"
