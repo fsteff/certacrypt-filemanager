@@ -1,4 +1,4 @@
-import { CertaCrypt } from 'certacrypt';
+import { CertaCrypt } from '@certacrypt/certacrypt';
 import { IpcMain } from 'electron';
 import DriveEventHandler from './DriveEventHandler';
 import { ICertaCryptEventHandler, IDriveEventHandler } from './EventInterfaces'
@@ -9,7 +9,7 @@ export default class CertaCryptEventHandler extends MainEventHandler implements 
     private driveHandlers: Map<String, IDriveEventHandler>
     
     constructor(app: IpcMain, certacrypt: CertaCrypt) {
-        super(app, 'certacrypt')
+        super(app, '@certacrypt/certacrypt')
         this.certacrypt = certacrypt
         this.driveHandlers = new Map<String, IDriveEventHandler>()
     }

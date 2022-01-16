@@ -3,15 +3,14 @@ import { app, BrowserWindow, ipcMain, protocol } from 'electron'
 import { promises as fs } from 'fs'
 import Main from './Main';
 
-import { CertaCrypt, GraphObjects, enableDebugLogging, DriveShare } from 'certacrypt'
-import { DefaultCrypto } from 'certacrypt-crypto'
+import { CertaCrypt, GraphObjects, enableDebugLogging, DriveShare } from '@certacrypt/certacrypt'
+import { DefaultCrypto } from '@certacrypt/certacrypt-crypto'
 
 import DriveEventHandler from './DriveEventHandler'
 import ContactsEventHandler from './ContactsEventHandler'
 import { Feed } from 'hyperobjects';
 import { PubSub } from './pubsub';
-import { GraphObject, SimpleGraphObject, Vertex } from 'hyper-graphdb';
-import { Directory } from 'certacrypt/lib/graphObjects';
+import { GraphObject, SimpleGraphObject, Vertex } from '@certacrypt/hyper-graphdb'
 
 app.on('ready', startServer)
 
@@ -77,12 +76,12 @@ async function startServer() {
 
     if(!config.sessionUrl) {
         const appRoot = await certacrypt.path('/apps')
-        let driveRoot = certacrypt.graph.create<Directory>()
+        let driveRoot = certacrypt.graph.create<GraphObjects.Directory>()
         await certacrypt.graph.put(driveRoot)
         appRoot.addEdgeTo(driveRoot, 'filemanager')
         await certacrypt.graph.put(appRoot)
 
-        const appDrive = await certacrypt.drive(<Vertex<Directory>>driveRoot)
+        const appDrive = await certacrypt.drive(<Vertex<GraphObjects.Directory>>driveRoot)
         await appDrive.promises.mkdir('/', {db: {encrypted: true}})
         await appDrive.promises.mkdir('/shares', {db: {encrypted: true}})      
 

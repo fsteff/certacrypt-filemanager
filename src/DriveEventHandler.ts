@@ -1,13 +1,11 @@
-import { CertaCrypt, GraphObjects, CryptoHyperdrive, createUrl, parseUrl, URL_TYPES, DriveShare } from "certacrypt";
+import { CertaCrypt, GraphObjects, CryptoHyperdrive, createUrl, parseUrl, URL_TYPES, DriveShare, Space as CollaborationSpace} from '@certacrypt/certacrypt';
 import { IpcMain, dialog } from "electron";
 import fs from 'fs'
 import { MainEventHandler } from "./MainEventHandler";
 import { IDriveEventHandler, FileDownload , Stat, readdirResult, Peer, Share, Space} from "./EventInterfaces";
 import unixify from 'unixify'
-import { GraphObject, Vertex } from "hyper-graphdb";
+import { Vertex } from "@certacrypt/hyper-graphdb";
 import Client from '@hyperspace/client'
-import { DriveGraphObject } from "certacrypt/lib/graphObjects";
-import { CollaborationSpace } from "certacrypt/lib/space";
 
 export default class DriveEventHandler extends MainEventHandler implements IDriveEventHandler{
     private downloads: Array<FileDownload> = []
@@ -122,7 +120,10 @@ export default class DriveEventHandler extends MainEventHandler implements IDriv
         const parts = path.split('/').filter(p => p.length > 0)
         const filename = parts[parts.length-1]
         const parentPath = '/apps/filemanager/' + parts.slice(0, parts.length-1).join('/')
-        const parent = await this.certacrypt.path(parentPath)
+        let parent = await this.certacrypt.path(parentPath)
+        if(parent instanceof DriveShare.VirtualDriveShareVertex) {
+            parent = (<DriveShare.VirtualDriveShareVertex>parent).realVertex
+        }
         await this.certacrypt.mountShare(parent, filename, url)
         return path
     }
@@ -138,13 +139,13 @@ export default class DriveEventHandler extends MainEventHandler implements IDriv
     }
 
     async getFileUrl(path: string): Promise<string> {
-        const file = <Vertex<DriveGraphObject>> await this.certacrypt.path('/apps/filemanager' + path)
+        const file = <Vertex<GraphObjects.DriveGraphObject>> await this.certacrypt.path('/apps/filemanager' + path)
         const pathParts = path.split('/')
         const filename = pathParts[pathParts.length-1]
         return this.certacrypt.getFileUrl(file, filename) 
     }
 
-    async convertToSpace(path: string): Promise<{space: CollaborationSpace,metadata: Space}> {
+    async convertToSpace(path: string): Promise<{space: CollaborationSpace.CollaborationSpace,metadata: Space}> {
         await this.certacrypt.convertToCollaborationSpace(DriveEventHandler.appPath + path)
         const spaceMeta = await this.drive.getSpace(path)
         if(!spaceMeta?.metadata) {
@@ -161,6 +162,14 @@ export default class DriveEventHandler extends MainEventHandler implements IDriv
         await fileSpace.space.addWriter(user)
         fileSpace.metadata.writers.push(userUrl)
         return <Space> fileSpace.metadata
+    }
+
+    async getSpace(path: string): Promise<Space> {
+        let fileSpace = await this.drive.getSpace(path)
+        if(!fileSpace?.space) {
+            return undefined
+        }
+        return fileSpace.metadata
     }
 }
 

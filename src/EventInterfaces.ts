@@ -1,5 +1,5 @@
-import { ContactProfile, FriendState, GraphObjects } from 'certacrypt'
-import { GraphObject } from 'hyper-graphdb';
+import { ContactProfile, FriendState, GraphObjects } from '@certacrypt/certacrypt'
+import { GraphObject } from '@certacrypt/hyper-graphdb';
 
 export type Fd = number
 export type Stat = {
@@ -74,6 +74,7 @@ export interface IContactsEventHandler {
     getAllSentShares(): Promise<Share[]>
 
     revokeShare(userUrl: string, path: string): Promise<void>
+    revokeWriteAccess(userUrl: string, path: string): Promise<void>
 }
 
 export interface IDriveEventHandler {
@@ -97,4 +98,5 @@ export interface IDriveEventHandler {
     getFileUrl(path: string): Promise<string>
 
     addWriterToSpace(path: string, user: string): Promise<Space>
+    getSpace(path: string): Promise<Space>
 }

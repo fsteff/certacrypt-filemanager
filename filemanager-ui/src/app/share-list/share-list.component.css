@@ -11,3 +11,20 @@ mat-grid-list {
 .headertile {
     height: fit-content;
 }
+
+.toolbar-container {
+    display: flex;
+    flex-direction: row;
+}
+
+.toolbar-element {
+    margin: 0.5em;
+}
+
+.toolbar-container button {
+    height: 2.5em;
+}
+
+.toolbar-container input {
+    height: 2em;
+}

@@ -57,4 +57,8 @@ export class ContactService {
   revokeShare(userUrl: string, path: string) : Promise<void> {
     return globals.contacts.revokeShare(userUrl, path)
   }
+
+  revokeWriteAccess(userUrl: string, path: string): Promise<void> {
+    return globals.contacts.revokeWriteAccess(userUrl, path)
+  }
 }

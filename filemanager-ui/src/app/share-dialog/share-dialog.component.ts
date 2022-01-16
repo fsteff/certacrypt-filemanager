@@ -1,5 +1,6 @@
-import { Component, ElementRef, Inject, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, Inject, OnInit, ViewChild } from '@angular/core';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatExpansionPanel } from '@angular/material/expansion';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatTable } from '@angular/material/table';
 
@@ -14,7 +15,7 @@ import { FileData } from '../file-list/file-list.component';
   templateUrl: './share-dialog.component.html',
   styleUrls: ['./share-dialog.component.css']
 })
-export class ShareDialogComponent implements OnInit {
+export class ShareDialogComponent implements AfterViewInit {
   url: string
   sharedWith: Contact[] = []
   allContacts: Contact[] = []
@@ -22,6 +23,7 @@ export class ShareDialogComponent implements OnInit {
   @ViewChild('urlInput') urlInput: ElementRef<HTMLInputElement>
   @ViewChild('sharedWithTable') sharedWithTable: MatTable<Contact>
   @ViewChild('allContactsTable') allContactsTable: MatTable<Contact>
+  @ViewChild('shareUrlPanel') shareUrlPanel: MatExpansionPanel
 
   constructor(
     private drive: DriveService,
@@ -29,7 +31,10 @@ export class ShareDialogComponent implements OnInit {
     private snackBarRef: MatSnackBar,
     @Inject(MAT_DIALOG_DATA) public fileData: FileData) { }
 
-  async ngOnInit(): Promise<void> {
+  ngAfterViewInit() {
+    this.shareUrlPanel.afterExpand.subscribe(async () => {
+      if(!this.url) this.url = await this.drive.createShare(this.fileData.path)
+    })
     return this.reloadShares()
   }
 
@@ -49,6 +54,7 @@ export class ShareDialogComponent implements OnInit {
 
     allContacts.sort((a,b) => a.username?.localeCompare(b.username))
     this.allContacts = allContacts
+    this.fileData.space = await this.drive.getSpace(this.fileData.path)
     this.allContactsTable?.renderRows()
     this.sharedWithTable?.renderRows()
   }
@@ -66,13 +72,12 @@ export class ShareDialogComponent implements OnInit {
 
   async toggleWriter(user: Contact) {
     if(this.isWriter(user.publicUrl)) {
-      this.snackBarRef.open('Revoking write access is not implemented', 'dismiss', {duration: 2000})
-      //this.contacts.revokeShare(user.publicUrl, this.fileData.path)
+      await this.contacts.revokeWriteAccess(user.publicUrl, this.fileData.path)
     } else {
-      this.fileData.space = await this.drive.addWriterToSpace(this.fileData.path, user.publicUrl)
+      await this.drive.addWriterToSpace(this.fileData.path, user.publicUrl)
       console.log('converted directory ' + this.fileData.path + ' to collaboration space')
-      this.sharedWithTable?.renderRows()
     }
+    await this.reloadShares()
   }
 
   async onRevokeRead(user: Contact) {

@@ -18,7 +18,7 @@ export class ToolbarComponent implements OnInit {
   public mountShareName: string = ''
   private currentPath: string
 
-  constructor(private drive: DriveService, private activatedRoute: ActivatedRoute, private snackBarRef: MatSnackBar) { }
+  constructor(private drive: DriveService, private activatedRoute: ActivatedRoute) { }
 
   ngOnInit(): void {
 
@@ -29,6 +29,7 @@ export class ToolbarComponent implements OnInit {
     
   }
 
+  /*
   async onMount(url: string, target: string) {
     const path = this.currentPath + '/' + target
     await this.drive.mountShare(url, path).catch(onError)
@@ -49,7 +50,7 @@ export class ToolbarComponent implements OnInit {
       this.snackBarRef.open('This link is not of type Share', 'dismiss', {duration: 2000})
     }
     if(shareName) this.mountShareName = shareName
-  }
+  }*/
 
   async onUpload() {
     await this.drive.uploadFile(this.currentPath)

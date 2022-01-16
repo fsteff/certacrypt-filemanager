@@ -1,4 +1,3 @@
-
 <mat-sidenav-container style="height: 100%; width: 100%;">
     <mat-sidenav mode="side" opened>
         <app-sidebar></app-sidebar>
@@ -6,8 +5,30 @@
     <mat-sidenav-content>
         <mat-grid-list cols="2" rowHeight="4em">
             <mat-grid-tile [colspan]="2" class="headertile">
+                <mat-grid-tile-header>Add files shared by URL</mat-grid-tile-header>
+            </mat-grid-tile>
+            <mat-grid-tile [colspan]="2" class="toolbar-container">
+
+                <form (change)="onMountChange(shareInput.value)" class="toolbar-element">
+                        <input type="text" style="background-color: white;" placeholder="hyper://..." #shareInput>
+                        <button mat-raised-button [matMenuTriggerFor]="mountmenu">Mount</button>
+                </form>
+
+                <mat-menu #mountmenu="matMenu">
+                    <div mat-menu-item>
+                        <form>
+                            <input [value]="mountShareName" type="text" placeholder="Name" #mountName
+                                (click)="$event.stopPropagation()">
+                            <button mat-raised-button
+                                (click)="onMount(shareInput.value, mountName.value)">mount</button>
+                        </form>
+                    </div>
+                </mat-menu>
+            </mat-grid-tile>
+            <mat-grid-tile [colspan]="2" class="headertile">
                 <mat-grid-tile-header>Things you shared</mat-grid-tile-header>
-                <i *ngIf="!sentShares || sentShares.length === 0">nothing yet - use the context menu in the filemanager!</i>
+                <i *ngIf="!sentShares || sentShares.length === 0">nothing yet - use the context menu in the
+                    filemanager!</i>
             </mat-grid-tile>
             <mat-grid-tile *ngFor="let share of sentShares" [rowspan]="4">
                 <app-share-overview [share]="share" class="shareListElement"></app-share-overview>
@@ -23,4 +44,3 @@
         </mat-grid-list>
     </mat-sidenav-content>
 </mat-sidenav-container>
-

@@ -1,4 +1,4 @@
-import { CertaCrypt, FriendState } from 'certacrypt'
+import { CertaCrypt, FriendState } from '@certacrypt/certacrypt'
 import { debug as HyperPubSubDebug, PubSub as HyperPubSub } from 'hyperpubsub'
 import { Client } from 'hyperspace'
 

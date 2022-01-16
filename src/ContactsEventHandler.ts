@@ -1,12 +1,11 @@
 import os from 'os'
-import { CertaCrypt, GraphObjects, User, FriendState, parseUrl, URL_TYPES, createUrl, CommShare } from "certacrypt";
-import { ShareGraphObject } from 'certacrypt-graph';
-import { IpcMain, dialog } from "electron";
-import { Generator, GraphObject, GRAPH_VIEW, IVertex, Query, QueryState, Vertex, VertexQueries } from "hyper-graphdb";
-import { Contact, IContactsEventHandler, Profile, Share } from "./EventInterfaces";
-import { MainEventHandler } from "./MainEventHandler";
-import { PubSub } from "./pubsub";
-import { GraphObjectTypeNames } from 'certacrypt/lib/graphObjects';
+import { CertaCrypt, GraphObjects, FriendState, URL_TYPES, createUrl, CommShare } from '@certacrypt/certacrypt'
+import { ShareGraphObject } from '@certacrypt/certacrypt-graph'
+import { IpcMain, dialog } from "electron"
+import { Generator, GraphObject, GRAPH_VIEW, IVertex, Query, QueryState, STATIC_VIEW, Vertex } from "hyper-graphdb"
+import { Contact, IContactsEventHandler, Profile, Share } from "./EventInterfaces"
+import { MainEventHandler } from "./MainEventHandler"
+import { PubSub } from "./pubsub"
 
 export default class ContactsEventHandler extends MainEventHandler implements IContactsEventHandler {
     constructor(app: IpcMain, readonly certacrypt: CertaCrypt, readonly pubsub: PubSub) {
@@ -118,9 +117,35 @@ export default class ContactsEventHandler extends MainEventHandler implements IC
         await driveShares.revokeShare(<Vertex<ShareGraphObject>>share.share)
     }
 
+    async revokeWriteAccess(userUrl: string, path: string) {
+        const space = await this.certacrypt.getSpaceForPath('/apps/filemanager' + path)
+        const user = await this.certacrypt.getUserByUrl(userUrl)
+        await space.revokeWriter(user)
+    }
+
     async getAllReceivedShares() : Promise<Share[]>{
         const shares = await (await this.certacrypt.contacts).getAllReceivedShares()
-        return Promise.all(shares.map(share => this.convertToShare(share)))
+        const mounted = await this.certacrypt.graph.queryPathAtVertex('/apps/filemanager/shares', await this.certacrypt.sessionRoot)
+            .out(undefined, this.certacrypt.graph.factory.get(STATIC_VIEW))
+            .matches(v => (<IVertex<ShareGraphObject>>v).getContent()?.info === 'share by URL')
+            .states()
+        const userUrl = (await this.certacrypt.user).getPublicUrl()
+        const mountedComm: Promise<Share>[] = mounted.map(async state => {
+            const vertex = <Vertex<ShareGraphObject>> state.value
+            const share = vertex.getContent()
+            const name = state.path[state.path.length-1].label
+
+            return <Share> {
+                shareUrl: createUrl(vertex, this.certacrypt.graph.getKey(vertex), undefined, URL_TYPES.SHARE, name),
+                drivePath: '/shares/' + name,
+                owner: share.owner,
+                info: share.info,
+                name: name,
+                sharedBy: share.owner,
+                sharedWith: [userUrl]
+            }
+        })
+        return Promise.all(shares.map(share => this.convertToShare(share)).concat(mountedComm))
     }
 
     async getAllSentShares() : Promise<Share[]>{

@@ -85,4 +85,8 @@ export class DriveService {
   async addWriterToSpace(path: string, user: string): Promise<Space> {
     return globals.drive.addWriterToSpace(path, user)
   }
+
+  async getSpace(path: string): Promise<Space> {
+    return globals.drive.getSpace(path)
+  }
 }

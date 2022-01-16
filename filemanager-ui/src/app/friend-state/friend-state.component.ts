@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { FriendState } from 'certacrypt';
+import { FriendState } from '@certacrypt/certacrypt';
 import { ContactService } from '../contact.service';
 
 @Component({
